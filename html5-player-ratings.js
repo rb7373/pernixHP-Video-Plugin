@@ -144,14 +144,14 @@
 
 
         // embed Keen.io to iframe DOM
-        var scriptKeen = document.createElement('script');
-        scriptKeen.onload = function() {
-            setupTest();
-            sendInfoTest();
-        };
-        scriptKeen.type = "text/javascript";
-        scriptKeen.src = "https://d26b395fwzu5fz.cloudfront.net/3.2.4/keen.min.js";
-        document.getElementsByTagName('head')[0].appendChild(scriptKeen);
+        //var scriptKeen = document.createElement('script');
+        //scriptKeen.onload = function() {
+        //    setupTest();
+        //    sendInfoTest();
+        //};
+        //scriptKeen.type = "text/javascript";
+        //scriptKeen.src = "https://d26b395fwzu5fz.cloudfront.net/3.2.4/keen.min.js";
+        //document.getElementsByTagName('head')[0].appendChild(scriptKeen);
 
 
         // --------- APPEND TAG THAT HOLDS CUSTOM ELEMENTS        
@@ -207,10 +207,12 @@
         debug("Jquery");
         debug(uniqueid());
 
+        console.log("Dom is ready");
+
         // Pernix O
 
-        //setupTest();
-        //sendInfoTest();
+        setupTest();
+        sendInfoTest();
 
         // Pernix C
 
