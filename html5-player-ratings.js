@@ -28,11 +28,6 @@
 
     // Pernix O
 
-    // embed Keen.io to iframe DOM
-    var scriptKeen = document.createElement('script');
-    scriptKeen.type = "text/javascript";
-    scriptKeen.src = "https://d26b395fwzu5fz.cloudfront.net/3.2.4/keen.min.js";
-    document.getElementsByTagName('head')[0].appendChild(scriptKeen);
 
     // Configure a new Keen JS client
 
@@ -59,10 +54,10 @@
         });
     }
 
-    Keen.ready(function () {
-        console.log('Keen IO is ready');
-        // Send it to the "purchases" collection
-    });
+    //Keen.ready(function () {
+    //    console.log('Keen IO is ready');
+    //    // Send it to the "purchases" collection
+    //});
 
     function sendInfoTest(){
 
@@ -147,6 +142,17 @@
     function initialize(evt) {
         debug("***INITIALIZE API***");
 
+
+        // embed Keen.io to iframe DOM
+        var scriptKeen = document.createElement('script');
+        scriptKeen.onload = function() {
+            setupTest();
+        };
+        scriptKeen.type = "text/javascript";
+        scriptKeen.src = "https://d26b395fwzu5fz.cloudfront.net/3.2.4/keen.min.js";
+        document.getElementsByTagName('head')[0].appendChild(scriptKeen);
+
+
         // --------- APPEND TAG THAT HOLDS CUSTOM ELEMENTS        
         videoTag = document.getElementById('bcVideo');
         var offsets = getOffsets(videoTag);
@@ -202,8 +208,8 @@
 
         // Pernix O
 
-        setupTest();
-        sendInfoTest();
+        //setupTest();
+        //sendInfoTest();
 
         // Pernix C
 
