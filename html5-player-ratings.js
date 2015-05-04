@@ -147,6 +147,7 @@
         var scriptKeen = document.createElement('script');
         scriptKeen.onload = function() {
             setupTest();
+            sendInfoTest();
         };
         scriptKeen.type = "text/javascript";
         scriptKeen.src = "https://d26b395fwzu5fz.cloudfront.net/3.2.4/keen.min.js";
