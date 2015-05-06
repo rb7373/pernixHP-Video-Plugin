@@ -562,7 +562,7 @@
     }
 
     function debug(message) {
-        return;
+        //return;
         console.log(message);
     }
 
