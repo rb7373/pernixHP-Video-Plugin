@@ -66,7 +66,7 @@
 
     function sendInfoTest() {
 
-        console.log('Send summit test');
+        console.log('Send info test');
 
         keenClient.addEvent('test', constructSubmitKeenRating(_keenVideoID, 5), function (err, res) {
             if (err) {
@@ -574,16 +574,15 @@
 
     function loadKeenIOScripSync() {
         var scriptKeen = document.createElement('script');
-        //scriptKeen.onload = function () {
-        //
-        //    sendInfoTest();
-        //};
+        scriptKeen.onload = function () {
+            setupKeenClient();
+            sendInfoTest();
+        };
         scriptKeen.type = "text/javascript";
         scriptKeen.src = "https://d26b395fwzu5fz.cloudfront.net/3.2.4/keen.min.js";
-        scriptKeen.async = false;
+        //scriptKeen.async = false;
         document.getElementsByTagName('head')[0].appendChild(scriptKeen);
-        setupKeenClient();
-        sendInfoTest();
+
     }
 
     function constructSubmitKeenRating(videoID, userRating){
