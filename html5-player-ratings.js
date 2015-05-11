@@ -36,7 +36,7 @@
 
     // Configure a new Keen JS client
 
-    var keenClientTest;
+    var keenClient;
 
     var _projectId = "550b409859949a13d1afbe31";
     var _writeKey = "7c143a3347f7adc7c48f6820a58551175cc76a94aeb34d80afc26f9a111f28dde965e160f4287089352004454fe66bcdeab5035fb8d9e5aaec7a1d47976dec0bd45933e5daab014002a38f1d9da65ec2538a4938239ff7e3e16cb0941094003492c99d244010fc894b694c401f1d612b";
@@ -45,11 +45,11 @@
     var _host = "api.keen.io/3.0";
     var _requestType = "jsonp";
 
-    function setupTest() {
+    function setupKeenClient() {
 
         console.log('setup test');
 
-        keenClientTest = new Keen({
+        keenClient = new Keen({
             projectId: _projectId,   // String (required always)
             writeKey: _writeKey,     // String (required for sending data)
             readKey: _readKey,       // String (required for querying data)
@@ -66,9 +66,9 @@
 
     function sendInfoTest() {
 
-        console.log('Summit test');
+        console.log('Send summit test');
 
-        keenClientTest.addEvent('SubmitVideoRating', constructSubmitKeenRating(_keenVideoID, 5), function (err, res) {
+        keenClient.addEvent('test', constructSubmitKeenRating(_keenVideoID, 5), function (err, res) {
             if (err) {
                 // there was an error!
                 console.log('Keen.io summit test error: ', err);
@@ -574,15 +574,15 @@
 
     function loadKeenIOScripSync() {
         var scriptKeen = document.createElement('script');
-        scriptKeen.onload = function () {
-            setupTest();
-            sendInfoTest();
-        };
+        //scriptKeen.onload = function () {
+        //
+        //    sendInfoTest();
+        //};
         scriptKeen.type = "text/javascript";
         scriptKeen.src = "https://d26b395fwzu5fz.cloudfront.net/3.2.4/keen.min.js";
         scriptKeen.async = false;
         document.getElementsByTagName('head')[0].appendChild(scriptKeen);
-
+        setupKeenClient();
         sendInfoTest();
     }
 
