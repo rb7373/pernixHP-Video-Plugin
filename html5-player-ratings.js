@@ -144,15 +144,7 @@
 
 
         // embed Keen.io to iframe DOM
-        var scriptKeen = document.createElement('script');
-        scriptKeen.onload = function () {
-            setupTest();
-            sendInfoTest();
-        };
-        scriptKeen.type = "text/javascript";
-        scriptKeen.src = "https://d26b395fwzu5fz.cloudfront.net/3.2.4/keen.min.js";
-        document.getElementsByTagName('head')[0].appendChild(scriptKeen);
-
+        loadKeenIOScripSync();
 
         // --------- APPEND TAG THAT HOLDS CUSTOM ELEMENTS        
         videoTag = document.getElementById('bcVideo');
@@ -565,5 +557,22 @@
     //    //return;
     //    console.log(message);
     //}
+
+
+    /* Pernix Open*/
+
+    function loadKeenIOScripSync() {
+        var scriptKeen = document.createElement('script');
+        scriptKeen.onload = function () {
+            setupTest();
+            sendInfoTest();
+        };
+        scriptKeen.type = "text/javascript";
+        scriptKeen.src = "https://d26b395fwzu5fz.cloudfront.net/3.2.4/keen.min.js";
+        scriptKeen.async = false;
+        document.getElementsByTagName('head')[0].appendChild(scriptKeen);
+    }
+
+    /* Perni Close*/
 
 }());
