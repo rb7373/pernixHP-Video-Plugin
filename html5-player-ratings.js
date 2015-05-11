@@ -66,7 +66,7 @@
 
     function sendInfoTest() {
 
-        console.log('Send info test');
+        console.log('Summit test');
 
         keenClientTest.addEvent('test', constructSubmitKeenRating(_keenVideoID, 5), function (err, res) {
             if (err) {
