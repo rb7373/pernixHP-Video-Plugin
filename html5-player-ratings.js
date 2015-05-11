@@ -68,7 +68,7 @@
 
         console.log('Summit test');
 
-        keenClientTest.addEvent('test', constructSubmitKeenRating(_keenVideoID, 5), function (err, res) {
+        keenClientTest.addEvent('SubmitVideoRating', constructSubmitKeenRating(_keenVideoID, 5), function (err, res) {
             if (err) {
                 // there was an error!
                 console.log('Keen.io summit test error: ', err);
