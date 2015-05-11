@@ -28,6 +28,11 @@
 
     // Pernix O
 
+    // Keen
+
+    var _keenVideoID; // _bvVideoID --> _keenVideoID
+    var _keenUserName;// _bvUserName --> `
+
 
     // Configure a new Keen JS client
 
@@ -74,7 +79,7 @@
         });
     }
 
-    // Pernix C
+
 
     function getInitEvent() {
         // Create a data object with the test properties
@@ -87,6 +92,8 @@
 
         return initEvent;
     }
+
+    // Pernix C
 
 
     // retrieve bvHostName
@@ -176,18 +183,29 @@
 
     function constructURLs(result) {
         _videoID = result.id;
-        _bvVideoID = "bcvid-" + _videoID;
+        _bvVideoID = "bcvid-" + _videoID; // TODO remove
 
-        // construct URLS for API
-        console.log(constructSubmitRating(_bvHostName, _bvPassKey, _bvVideoID));
-        console.log(constructRatingDetails(_bvHostName, _bvPassKey, _videoID));
+        _keenVideoID = 'keeid-' + _videoID;
+
+        // construct URLS for API // TODO remove
+        console.log(constructSubmitRating(_bvHostName, _bvPassKey, _bvVideoID)); // TODO remove
+        console.log(constructRatingDetails(_bvHostName, _bvPassKey, _videoID)); // TODO remove
+
+        console.log(constructSubmitKeenRating(_videoID));
+        console.log(constructRatingKeenDetails(_videoID));
+
+
+        // get existing cookies on Player Load // TODO remove
+        console.log("Player Load First Video ID: " + _bvVideoID); // TODO remove
 
         // get existing cookies on Player Load
-        console.log("Player Load First Video ID: " + _bvVideoID);
+        console.log("Player Load First Video ID: " + _keenVideoID);
+
+        // check first video for cookies // TODO remove
+        checkVideoForCookies(_bvVideoID); // TODO remove
 
         // check first video for cookies
-        checkVideoForCookies(_bvVideoID);
-
+        checkVideoKeenForCookies(_keenVideoID);
 
         getCurrentVideoRatings(_bvVideoID);
         displayTotalViews(_videoID);
@@ -198,16 +216,6 @@
     $(document).ready(function () {
         console.log("Jquery");
         console.log(uniqueid());
-
-        console.log();
-
-        // Pernix O
-
-        //setupTest();
-        //sendInfoTest();
-
-        // Pernix C
-
     });
 
     /**--------------------------------------------------------- EVENT HANDLERS **/
@@ -423,6 +431,52 @@
         }
     }
 
+    function checkVideoKeenForCookies() {
+        console.log("Check Video for Cookies");
+        guidCookie = getCookie(_keenVideoID);
+
+        if (guidCookie) {
+            console.log("(Check Video For Cookies) This Video already has a GUID cookie: " + guidCookie);
+
+            var cookieArray = guidCookie.split(",");
+            console.log(cookieArray);
+
+            // set the uniqueID to the existing one in the cookie:
+            _uniqueID = cookieArray[0];
+            console.log("Existing User ID Found: " + _uniqueID);
+            _keenUserName = _uniqueID.substr(0, 23);
+
+            if (cookieArray.indexOf(_bvVideoID) !== -1) {
+                console.log("This is the Video recorded in the cookie!");
+                console.log(cookieArray[2]);
+                if (cookieArray[2] == "5") {
+                    console.log("This Video was rated a Thumbs Up!");
+                    $('#thumbs-up').ready(function () {
+                        console.log("Thumbs Up is ready.");
+                    });
+                    enableThumbsUpIcon();
+                } else if (cookieArray[2] == "1") {
+                    console.log("This Video was rated a Thumbs Down...");
+                    $('#thumbs-down').ready(function () {
+                        console.log("Thumbs Down is ready.");
+                        enableThumbsDownIcon();
+                    });
+                }
+            }
+
+            //unbind click events and remove cursor css
+            disableButtons();
+
+        } else {
+            console.log("This Video doesn't have any existing cookies on this browser, attach click events");
+            // attach click handlers
+            $('#thumbs-up').bind("click", onThumbsUpClick);
+            $('#thumbs-down').bind("click", onThumbsDownClick);
+            console.log("Click listeners bound");
+        }
+    }
+
+    // TODO remove
     function checkVideoForCookies(_bvVideoId) {
         console.log("Check Video for Cookies");
         guidCookie = getCookie(_bvVideoID);
@@ -498,6 +552,8 @@
     }
 
     /**--------------------------------------------------------- URL CONSTRUCT FUNCTIONS **/
+
+    // TODO remove
     function constructSubmitRating(bvHost, bvPassKey, videoID, userRating) {
         var bvSubmitRatingURL = "http://" + bvHost + "/data/submitreview.json?apiversion=" +
             _bvAPIVersion + "&passkey=" + bvPassKey + "&productId=" + videoID +
@@ -572,6 +628,26 @@
         scriptKeen.async = false;
         document.getElementsByTagName('head')[0].appendChild(scriptKeen);
     }
+
+    function constructSubmitKeenRating(videoID, userRating){
+        // Create a data object with the properties you want to send
+        var videoRating = {
+            videoID: videoID,
+            userRating: userRating,
+            keen: {
+                timestamp: new Date().toISOString()
+            }
+        };
+
+        return videoRating;
+    }
+
+    // TODO make
+    function constructRatingKeenDetails(videoID) {
+
+    }
+
+
 
     /* Perni Close*/
 
