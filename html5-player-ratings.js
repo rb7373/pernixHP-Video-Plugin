@@ -68,13 +68,13 @@
 
         console.log('Send info test');
 
-        keenClientTest.addEvent('test', getInitEvent(), function (err, res) {
+        keenClientTest.addEvent('test', constructSubmitKeenRating(_keenVideoID, 5), function (err, res) {
             if (err) {
                 // there was an error!
-                console.log('Keen.io test error: ', err);
+                console.log('Keen.io summit test error: ', err);
             }
             else {
-                console.log('Successful test delivery: ', res);
+                console.log('Successful summit test delivery: ', res);
             }
         });
     }
@@ -431,51 +431,6 @@
         }
     }
 
-    function checkVideoKeenForCookies() {
-        console.log("Check Video for Cookies");
-        guidCookie = getCookie(_keenVideoID);
-
-        if (guidCookie) {
-            console.log("(Check Video For Cookies) This Video already has a GUID cookie: " + guidCookie);
-
-            var cookieArray = guidCookie.split(",");
-            console.log(cookieArray);
-
-            // set the uniqueID to the existing one in the cookie:
-            _uniqueID = cookieArray[0];
-            console.log("Existing User ID Found: " + _uniqueID);
-            _keenUserName = _uniqueID.substr(0, 23);
-
-            if (cookieArray.indexOf(_bvVideoID) !== -1) {
-                console.log("This is the Video recorded in the cookie!");
-                console.log(cookieArray[2]);
-                if (cookieArray[2] == "5") {
-                    console.log("This Video was rated a Thumbs Up!");
-                    $('#thumbs-up').ready(function () {
-                        console.log("Thumbs Up is ready.");
-                    });
-                    enableThumbsUpIcon();
-                } else if (cookieArray[2] == "1") {
-                    console.log("This Video was rated a Thumbs Down...");
-                    $('#thumbs-down').ready(function () {
-                        console.log("Thumbs Down is ready.");
-                        enableThumbsDownIcon();
-                    });
-                }
-            }
-
-            //unbind click events and remove cursor css
-            disableButtons();
-
-        } else {
-            console.log("This Video doesn't have any existing cookies on this browser, attach click events");
-            // attach click handlers
-            $('#thumbs-up').bind("click", onThumbsUpClick);
-            $('#thumbs-down').bind("click", onThumbsDownClick);
-            console.log("Click listeners bound");
-        }
-    }
-
     // TODO remove
     function checkVideoForCookies(_bvVideoId) {
         console.log("Check Video for Cookies");
@@ -627,6 +582,8 @@
         scriptKeen.src = "https://d26b395fwzu5fz.cloudfront.net/3.2.4/keen.min.js";
         scriptKeen.async = false;
         document.getElementsByTagName('head')[0].appendChild(scriptKeen);
+
+        sendInfoTest();
     }
 
     function constructSubmitKeenRating(videoID, userRating){
@@ -645,6 +602,82 @@
     // TODO make
     function constructRatingKeenDetails(videoID) {
 
+    }
+
+    function checkVideoKeenForCookies() {
+        console.log("Check Video for Cookies");
+        guidCookie = getCookie(_keenVideoID);
+
+        if (guidCookie) {
+            console.log("(Check Video For Cookies) This Video already has a GUID cookie: " + guidCookie);
+
+            var cookieArray = guidCookie.split(",");
+            console.log(cookieArray);
+
+            // set the uniqueID to the existing one in the cookie:
+            _uniqueID = cookieArray[0];
+            console.log("Existing User ID Found: " + _uniqueID);
+            _keenUserName = _uniqueID.substr(0, 23);
+
+            if (cookieArray.indexOf(_bvVideoID) !== -1) {
+                console.log("This is the Video recorded in the cookie!");
+                console.log(cookieArray[2]);
+                if (cookieArray[2] == "5") {
+                    console.log("This Video was rated a Thumbs Up!");
+                    $('#thumbs-up').ready(function () {
+                        console.log("Thumbs Up is ready.");
+                    });
+                    enableThumbsUpIcon();
+                } else if (cookieArray[2] == "1") {
+                    console.log("This Video was rated a Thumbs Down...");
+                    $('#thumbs-down').ready(function () {
+                        console.log("Thumbs Down is ready.");
+                        enableThumbsDownIcon();
+                    });
+                }
+            }
+
+            //unbind click events and remove cursor css
+            disableButtons();
+
+        } else {
+            console.log("This Video doesn't have any existing cookies on this browser, attach click events");
+            // attach click handlers
+            $('#thumbs-up').bind("click", onThumbsUpClick);
+            $('#thumbs-down').bind("click", onThumbsDownClick);
+            console.log("Click listeners bound");
+        }
+    }
+
+    function getCurrentVideoRatings(currentBVVideoID) {
+        var likes = 0;
+        var dislikes = 0;
+
+        console.log(constructRatingDetails(_bvHostName, _bvPassKey, _bvVideoID));
+
+
+        // --------- KEEP IN SEPARATE FUNCTION??? (getCurrentVideoRatings?)
+        $.ajaxSetup({cache: true});
+        $.getJSON(constructRatingDetails(_bvHostName, _bvPassKey, _bvVideoID) + "&callback=?",
+            function (json) {
+                console.log("JSONP Response: ");
+                console.log(json);
+                jQuery.each(json.Results, function (index, result) {
+                    console.log(result);
+                    if (result.Rating == "1") {
+                        console.log("Increment Dislikes");
+                        dislikes++;
+                    } else if (result.Rating == "5") {
+                        console.log("Increment Likes");
+                        likes++;
+                    }
+                });
+                console.log("Total Likes: " + likes);
+                console.log("Total Dislikes: " + dislikes);
+
+                drawBarGraph(likes, dislikes);
+            });
+        // ---------
     }
 
 
