@@ -71,18 +71,6 @@
         });
     }
 
-    function finishedVideo(videoID) {
-
-        var loadVideoEvent = {
-            type: _summitEventView,
-            videoID: videoID,
-            keen: {
-                timestamp: new Date().toISOString()
-            }
-        };
-
-        return loadVideoEvent;
-    }
 
 
     //listening for events
@@ -153,7 +141,7 @@
     function onMediaComplete() {
         console.log('COMPLETE VIDEO');
 
-        _keenClient.addEvent(_summitEventView, finishedVideo(_keenVideoID), function (err, res) {
+        _keenClient.addEvent(_summitEventView, constructSubmitKeenFinishedVideo(_keenVideoID), function (err, res) {
             if (err) {
                 // there was an error!
                 console.log('Keen.io summit complete error: ', err);
@@ -448,6 +436,18 @@
         return videoRating;
     }
 
+    function constructSubmitKeenFinishedVideo(videoID) {
+
+        var finishedVideoEvent = {
+            videoID: videoID,
+            keen: {
+                timestamp: new Date().toISOString()
+            }
+        };
+
+        return finishedVideoEvent;
+    }
+
     function checkVideoKeenForCookies() {
         console.log("Check Video for Cookies");
         guidCookie = getCookie(_keenVideoID);
@@ -534,6 +534,6 @@
 
 
     /* Perni Close*/
-    // update! 10
+    // update! 11
 
 }());
