@@ -143,8 +143,10 @@
             }
             else {
                 console.log('Keen.io successful complete summit: ', res);
+                displayTotalViews(_keenVideoID);
             }
         });
+
     }
 
     function changeVidCallback(result) {
@@ -172,6 +174,7 @@
 
             // submit rating
             submitKeenRating(_like);
+            countRatingByVideoIDAndDraw(_keenVideoID);
         } else {
             console.log("You already have a GUID: " + guidCookie);
         }
@@ -191,6 +194,7 @@
 
             // submit rating
             submitKeenRating(_dislike);
+            countRatingByVideoIDAndDraw(_keenVideoID);
         } else {
             console.log("You already have a GUID: " + guidCookie);
         }
@@ -291,7 +295,6 @@
         console.log($('#video-ratings'));
     }
 
-    // TODO pending
     function displayTotalViews(videoID) {
 
 
@@ -318,6 +321,7 @@
             }
             else {
                 console.log('Keen.io successful summit: ', res);
+
             }
         });
     }
@@ -528,6 +532,6 @@
 
 
     /* Perni Close*/
-    // update! 13
+    // update! 14
 
 }());
