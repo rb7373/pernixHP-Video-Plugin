@@ -1,14 +1,7 @@
 (function () {
     //global variables
-    var _mediaAPIToken = "ILssOMrqpCo7eJh0weJVl8x21BEeaoE-eTtpiCrIcmc.";
-    var _bvHostName = "apitestcustomer.ugc.bazaarvoice.com/bvstaging";
-    var _bvPassKey = "stq9t01nsnvlk2drx5b7q5zzm";
-    var _parentURL = window.location.href;
-    var _bvAPIVersion = "5.4";
-    var _videoID,
-        _bvVideoID,
-        _bvUserRating,
-        _bvUserName;
+
+    var _videoID;
 
     var guidCookie;
     var _uniqueID;
@@ -48,90 +41,6 @@
     var _host = "api.keen.io/3.0";
     var _requestType = "jsonp";
 
-    function setup_keenClient() {
-
-        console.log('setup test');
-
-        _keenClient = new Keen({
-            projectId: _projectId,   // String (required always)
-            writeKey: _writeKey,     // String (required for sending data)
-            readKey: _readKey,       // String (required for querying data)
-            protocol: _protocol,
-            host: _host,
-            requestType: _requestType
-        });
-    }
-
-    //Keen.ready(function () {
-    //    console.log('Keen IO is ready');
-    //    // Send it to the "purchases" collection
-    //});
-
-    function sendInfoTest() {
-
-        console.log('Send summit test');
-
-        _keenClient.addEvent(_summitEventRating, constructSubmitKeenRating(_keenVideoID, 1), function (err, res) {
-            if (err) {
-                // there was an error!
-                console.log('Keen.io summit test error: ', err);
-            }
-            else {
-                console.log('Successful summit test delivery: ', res);
-            }
-        });
-    }
-
-
-    function getInitEvent() {
-        // Create a data object with the test properties
-        var initEvent = {
-            type: 'setup test',
-            keen: {
-                timestamp: new Date().toISOString()
-            }
-        };
-
-        return initEvent;
-    }
-
-    // Pernix C
-
-
-    // retrieve bvHostName
-    if (_parentURL.indexOf('bvHostname=') !== -1) {
-        console.log("***host name is in the URL!***");
-
-        var bvHostIndex = _parentURL.indexOf('bvHostname=');
-        _bvHostName = _parentURL.substring(bvHostIndex + 11);
-
-        console.log("***host name is :" + _bvHostName);
-
-        // substring until next query arg if it is not the last in URL
-        if (_bvHostName.indexOf('&') !== -1) {
-            var bvHostEndIndex = _bvHostName.indexOf('&');
-            _bvHostName = _bvHostName.substring(0, bvHostEndIndex);
-        }
-        console.log("Final Host: " + _bvHostName);
-    }
-
-    // retrieve bvPassKey
-    if (_parentURL.indexOf('bvPassKey=') !== -1) {
-        console.log("***Pass Key is in the URL!***");
-
-        var bvPassIndex = _parentURL.indexOf('bvPassKey=');
-        _bvPassKey = _parentURL.substring(bvPassIndex + 10);
-
-        console.log("***Pass Key is :" + _bvPassKey);
-
-        // substring until next query arg if it is not the last in URL
-        if (_bvPassKey.indexOf('&') !== -1) {
-            var bvPassEndIndex = _bvPassKey.indexOf('&');
-            _bvPassKey = _bvPassKey.substring(0, bvPassEndIndex);
-        }
-        console.log("Final Host: " + _bvPassKey);
-    }
-
     var player,
         videoPlayerModule,
         experienceModule;
@@ -146,6 +55,21 @@
     else {
         experienceModule.addEventListener(brightcove.api.events.ExperienceEvent.TEMPLATE_READY, initialize);
     }
+
+    function setup_keenClient() {
+
+        console.log('setup keenClient');
+
+        _keenClient = new Keen({
+            projectId: _projectId,   // String (required always)
+            writeKey: _writeKey,     // String (required for sending data)
+            readKey: _readKey,       // String (required for querying data)
+            protocol: _protocol,
+            host: _host,
+            requestType: _requestType
+        });
+    }
+
 
     //listening for events
     function initialize(evt) {
@@ -185,31 +109,15 @@
 
     function constructURLs(result) {
         _videoID = result.id;
-        _bvVideoID = "bcvid-" + _videoID; // TODO remove
 
         _keenVideoID = 'keeid-' + _videoID;
-
-        // construct URLS for API // TODO remove
-        console.log(constructSubmitRating(_bvHostName, _bvPassKey, _bvVideoID)); // TODO remove
-        console.log(constructRatingDetails(_bvHostName, _bvPassKey, _videoID)); // TODO remove
-
-        console.log(constructSubmitKeenRating(_videoID));
-        console.log(constructRatingKeenDetails(_videoID));
-
-
-        // get existing cookies on Player Load // TODO remove
-        console.log("Player Load First Video ID: " + _bvVideoID); // TODO remove
 
         // get existing cookies on Player Load
         console.log("Player Load First Video ID: " + _keenVideoID);
 
-        // check first video for cookies // TODO remove
-        checkVideoForCookies(_bvVideoID); // TODO remove
-
         // check first video for cookies
         checkVideoKeenForCookies(_keenVideoID);
 
-        getCurrentVideoRatings(_bvVideoID);
         displayTotalViews(_videoID);
     }
 
@@ -230,38 +138,30 @@
 
     // TODO finish
     function changeVidCallback(result) {
+
         _videoID = result.id;
-        _bvVideoID = "bcvid-" + _videoID; // TODO remove
-
         _keenVideoID = 'keeid-' + _videoID;
-
-        console.log("Media Change: " + _bvVideoID); // TODO remove
-
         console.log("Media Change: " + _keenVideoID);
-
         checkVideoForCookies();
 
-        getCurrentVideoRatings(_bvVideoID); // TODO refractor
+        countRatingByVideoIDAndDraw(_keenVideoID);
         displayTotalViews(_videoID); // TODO refractor
+
     }
 
-    // TODO finish
     function onThumbsUpClick() {
         // if unique ID is not set for this user yet...i.e., it's their first rating
         if (!_uniqueID) {
             _uniqueID = uniqueid();
-            _bvUserName = _uniqueID.substr(0, 23); // TODO remove
             _keenUserName = _uniqueID.substr(0, 23);
         }
 
         if (!guidCookie) {
             disableButtons();
-            setCookie(_bvVideoID, _uniqueID + "," + _bvVideoID + ",5"); // TODO remove
             setCookie(_keenVideoID, _uniqueID + "," + _keenVideoID + ",5");
             enableThumbsUpIcon();
 
             // submit rating
-            submitRating('5'); // TODO remove
             submitKeenRating(_like);
         } else {
             console.log("You already have a GUID: " + guidCookie);
@@ -273,30 +173,19 @@
         // if unique ID is not set for this user yet...i.e., it's their first rating
         if (!_uniqueID) {
             _uniqueID = uniqueid();
-            _bvUserName = _uniqueID.substr(0, 23); // TODO remove
             _keenUserName = _uniqueID.substr(0, 23);
         }
 
         if (!guidCookie) {
             disableButtons();
-            setCookie(_bvVideoID, _uniqueID + "," + _bvVideoID + ",1"); //  TODO remove
             setCookie(_keenVideoID, _uniqueID + "," + _keenVideoID + ",1");
             enableThumbsDownIcon();
 
             // submit rating
-            submitRating('1'); // TODO remove
             submitKeenRating(_dislike);
         } else {
             console.log("You already have a GUID: " + guidCookie);
         }
-    }
-
-    // TODO pending
-    function submitRating(rating) {
-        $.post(constructSubmitRating(_bvHostName, _bvPassKey, _bvVideoID, rating) + "&callback=?",
-            function (json) {
-                console.log(json);
-            });
     }
 
     // TODO doing
@@ -349,65 +238,6 @@
             'cursor': 'pointer'
         });
         console.log("display UI Buttons");
-    }
-
-    // TODO remove
-    function drawBarGraph(likes, dislikes) {
-        //// remove any existing bar graph data
-        //$('#video-ratings').remove();
-        //
-        //// convert amount of likes to percent
-        //var totalVotes = likes + dislikes;
-        //var likesPercent = totalVotes ? likes / totalVotes : 0;
-        //
-        //console.log("Percentage of Likes: " + likesPercent + "%");
-        //
-        //// to get width, multiply width of bar against percent
-        //var likeBarWidth = 178 * likesPercent;
-        //
-        //$('#custom-elements').append('<div id="video-ratings" style="position:relative;float:left;width:178px;top:0;"><canvas id="barGraphBG" width="178" height="8" style="position:absolute;top:0;left:0;"></canvas></div>');
-        //
-        //var canvasBG = document.getElementById('barGraphBG');
-        //var contextBG = canvasBG.getContext('2d');
-        //
-        //contextBG.beginPath();
-        //contextBG.rect(0, 0, 178, 8);
-        //contextBG.fillStyle = "#bbbbbb";
-        //contextBG.fill();
-        //
-        //console.log(canvasBG);
-        //
-        //$('#video-ratings').append('<canvas id="canvasLikes" width="178" height="8" style="position:absolute;top:0px;left:0;"></canvas>');
-        //
-        //var likeCanvas = document.getElementById('canvasLikes');
-        //var likeContext = likeCanvas.getContext('2d');
-        //var likeWidth = likeBarWidth;
-        //
-        //likeContext.beginPath();
-        //likeContext.rect(0, 0, likeWidth, 8);
-        //likeContext.fillStyle = "#0990d2";
-        //likeContext.fill();
-        //
-        //console.log(likeCanvas);
-        //
-        //// print likes and dislikes
-        //$('#video-ratings').append('<p id="total-likes"></p>');
-        //$('#video-ratings').append('<p id="total-dislikes"></p>');
-        //$('#video-ratings > p').css({
-        //    'font-family': 'Arial',
-        //    'font-size': '10px',
-        //    'font-weight': 'bold',
-        //    'position': 'absolute',
-        //    'top': '2px',
-        //});
-        //$('#video-ratings > p:last-child').css({'right': '0'});
-        //
-        //var totalLikesDiv = document.getElementById('total-likes');
-        //var totalDislikesDiv = document.getElementById('total-dislikes');
-        //
-        //totalLikesDiv.innerHTML = (likes == 1) ? likes + " Like" : likes + " Likes";
-        //totalDislikesDiv.innerHTML = (dislikes == 1) ? dislikes + " Dislike" : dislikes + " Dislikes";
-        //console.log($('#video-ratings'));
     }
 
     function drawBarGraphLikesDislikes(likes, dislikes) {
@@ -470,36 +300,39 @@
 
     // TODO pending
     function displayTotalViews(videoID) {
-        // remove any existing views tags
-        $('#total-video-views').remove();
 
-        // re-add to custom DIV
-        $('#custom-elements').append('<div id="total-video-views" style="float:right;font-family:Arial;font-size:16px;font-weight:bold;position:relative;top:8px;"></div>');
+        console.log('--------------------displayTotalViews-----------------------');
 
-        // overwrite Media API token if present in override variables
-        if (_parentURL.indexOf('apiToken=') !== -1) {
-            apiTokenIndex = _parentURL.indexOf('apiToken=');
-            _mediaAPIToken = _parentURL.substring(apiTokenIndex + 9);
-
-            if (_mediaAPIToken.indexOf('&') !== -1) {
-                apiTokenEndIndex = _mediaAPIToken.indexOf('&');
-                _mediaAPIToken = _mediaAPIToken.substring(0, apiTokenEndIndex);
-            }
-
-            console.log("Media API Token was overriden to: " + _mediaAPIToken);
-        }
-
-        var mediaAPIRequest = "http://api.brightcove.com/services/library?command=find_video_by_id&video_fields=playsTotal&token=" + _mediaAPIToken + "&video_id=" + videoID;
-        console.log(mediaAPIRequest);
-
-        $.getJSON(mediaAPIRequest + "&callback=?", function (data) {
-            var items = [];
-
-            var playsTotal = data.playsTotal ? data.playsTotal : "0";
-            playsTotal += " Views";
-
-            $('#total-video-views').text(playsTotal);
-        });
+        //// remove any existing views tags
+        //$('#total-video-views').remove();
+        //
+        //// re-add to custom DIV
+        //$('#custom-elements').append('<div id="total-video-views" style="float:right;font-family:Arial;font-size:16px;font-weight:bold;position:relative;top:8px;"></div>');
+        //
+        //// overwrite Media API token if present in override variables
+        //if (_parentURL.indexOf('apiToken=') !== -1) {
+        //    var apiTokenIndex = _parentURL.indexOf('apiToken=');
+        //    _mediaAPIToken = _parentURL.substring(apiTokenIndex + 9);
+        //
+        //    if (_mediaAPIToken.indexOf('&') !== -1) {
+        //        var apiTokenEndIndex = _mediaAPIToken.indexOf('&');
+        //        _mediaAPIToken = _mediaAPIToken.substring(0, apiTokenEndIndex);
+        //    }
+        //
+        //    console.log("Media API Token was overriden to: " + _mediaAPIToken);
+        //}
+        //
+        //var mediaAPIRequest = "http://api.brightcove.com/services/library?command=find_video_by_id&video_fields=playsTotal&token=" + _mediaAPIToken + "&video_id=" + videoID;
+        //console.log(mediaAPIRequest);
+        //
+        //$.getJSON(mediaAPIRequest + "&callback=?", function (data) {
+        //    var items = [];
+        //
+        //    var playsTotal = data.playsTotal ? data.playsTotal : "0";
+        //    playsTotal += " Views";
+        //
+        //    $('#total-video-views').text(playsTotal);
+        //});
 
     }
 
@@ -523,111 +356,8 @@
         }
     }
 
-    // TODO remove
-    function checkVideoForCookies(_bvVideoId) {
-        console.log("Check Video for Cookies");
-        guidCookie = getCookie(_bvVideoID);
-
-        if (guidCookie) {
-            console.log("(Check Video For Cookies) This Video already has a GUID cookie: " + guidCookie);
-
-            var cookieArray = guidCookie.split(",");
-            console.log(cookieArray);
-
-            // set the uniqueID to the existing one in the cookie:
-            _uniqueID = cookieArray[0];
-            console.log("Existing User ID Found: " + _uniqueID);
-            _bvUserName = _uniqueID.substr(0, 23);
-
-            if (cookieArray.indexOf(_bvVideoID) !== -1) {
-                console.log("This is the Video recorded in the cookie!");
-                console.log(cookieArray[2]);
-                if (cookieArray[2] == "5") {
-                    console.log("This Video was rated a Thumbs Up!");
-                    $('#thumbs-up').ready(function () {
-                        console.log("Thumbs Up is ready.");
-                    });
-                    enableThumbsUpIcon();
-                } else if (cookieArray[2] == "1") {
-                    console.log("This Video was rated a Thumbs Down...");
-                    $('#thumbs-down').ready(function () {
-                        console.log("Thumbs Down is ready.");
-                        enableThumbsDownIcon();
-                    });
-                }
-            }
-
-            //unbind click events and remove cursor css
-            disableButtons();
-
-        } else {
-            console.log("This Video doesn't have any existing cookies on this browser, attach click events");
-            // attach click handlers
-            $('#thumbs-up').bind("click", onThumbsUpClick);
-            $('#thumbs-down').bind("click", onThumbsDownClick);
-            console.log("Click listeners bound");
-        }
-    }
-
-    // TODO remove
-    function getCurrentVideoRatings(currentBVVideoID) {
-        var likes = 0;
-        var dislikes = 0;
-
-        console.log(constructRatingDetails(_bvHostName, _bvPassKey, _bvVideoID));
-        // --------- KEEP IN SEPARATE FUNCTION??? (getCurrentVideoRatings?)
-        $.ajaxSetup({cache: true});
-        $.getJSON(constructRatingDetails(_bvHostName, _bvPassKey, _bvVideoID) + "&callback=?",
-            function (json) {
-                console.log("JSONP Response: ");
-                console.log(json);
-                jQuery.each(json.Results, function (index, result) {
-                    console.log(result);
-                    if (result.Rating == "1") {
-                        console.log("Increment Dislikes");
-                        dislikes++;
-                    } else if (result.Rating == "5") {
-                        console.log("Increment Likes");
-                        likes++;
-                    }
-                });
-                console.log("Total Likes: " + likes);
-                console.log("Total Dislikes: " + dislikes);
-
-                drawBarGraph(likes, dislikes);
-            });
-        // ---------
-    }
-
     /**--------------------------------------------------------- URL CONSTRUCT FUNCTIONS **/
 
-    // TODO remove
-    function constructSubmitRating(bvHost, bvPassKey, videoID, userRating) {
-        var bvSubmitRatingURL = "http://" + bvHost + "/data/submitreview.json?apiversion=" +
-            _bvAPIVersion + "&passkey=" + bvPassKey + "&productId=" + videoID +
-            "&action=submit&rating=" + userRating +
-            "&UserLocation=Home&UserEmail=" + _bvUserName + "@useremail.com" + "&UserNickname=" + _bvUserName +
-            "&ReviewText=testtesttesttesttesttestesttest%20testtesttesttesttesttestesttest%20testtesttesttesttesttestesttest" +
-            "&title=Default%20review%20title&UserId=" + _bvUserName + "&callback=callback";
-
-        return bvSubmitRatingURL;
-    }
-
-    /*function constructRetrieveRating(bvHost, bvPassKey, videoID) {
-     var bvRetrieveRatingURL = "http://" + bvHost + "/data/reviews.json?apiversion=" +
-     _bvAPIVersion + "&passkey=" + bvPassKey + "&filter=id:" + videoID +
-     "&callback=callback";
-
-     return bvRetrieveRatingURL;
-     }*/
-
-    function constructRatingDetails(bvHost, bvPassKey, videoID) {
-        var bvRatingDetailsURL = "http://" + bvHost + "/data/reviews.json?apiversion=" +
-            _bvAPIVersion + "&passkey=" + bvPassKey + "&filter=productId:" + videoID +
-            "&include=products&stats=reviews";
-
-        return bvRatingDetailsURL;
-    }
 
     function getOffsets(obj) {
         var curleft = 0;
@@ -669,7 +399,6 @@
         var scriptKeen = document.createElement('script');
         scriptKeen.onload = function () {
             setup_keenClient();
-            sendInfoTest();
 
             console.log('***HERE GET likes');
             countRatingByVideoIDAndDraw(_keenVideoID);
@@ -694,11 +423,6 @@
         return videoRating;
     }
 
-    // TODO make
-    function constructRatingKeenDetails(videoID) {
-
-    }
-
     function checkVideoKeenForCookies() {
         console.log("Check Video for Cookies");
         guidCookie = getCookie(_keenVideoID);
@@ -714,7 +438,7 @@
             console.log("Existing User ID Found: " + _uniqueID);
             _keenUserName = _uniqueID.substr(0, 23);
 
-            if (cookieArray.indexOf(_bvVideoID) !== -1) {
+            if (cookieArray.indexOf(_keenVideoID) !== -1) {
                 console.log("This is the Video recorded in the cookie!");
                 console.log(cookieArray[2]);
                 if (cookieArray[2] == "5") {
@@ -742,40 +466,6 @@
             $('#thumbs-down').bind("click", onThumbsDownClick);
             console.log("Click listeners bound");
         }
-    }
-
-    function getCurrentVideoRatings(currentBVVideoID) {
-        //var likes = 0;
-        //var dislikes = 0;
-        //
-        //console.log(constructRatingDetails(_bvHostName, _bvPassKey, _bvVideoID)); // TODO remove
-        //
-        //
-        //// --------- KEEP IN SEPARATE FUNCTION??? (getCurrentVideoRatings?)
-        //
-        //// TODO Remove all
-        //$.ajaxSetup({cache: true});
-        //$.getJSON(constructRatingDetails(_bvHostName, _bvPassKey, _bvVideoID) + "&callback=?",
-        //    function (json) {
-        //        console.log("JSONP Response: ");
-        //        console.log(json);
-        //        jQuery.each(json.Results, function (index, result) {
-        //            console.log(result);
-        //            if (result.Rating == "1") {
-        //                console.log("Increment Dislikes");
-        //                dislikes++;
-        //            } else if (result.Rating == "5") {
-        //                console.log("Increment Likes");
-        //                likes++;
-        //            }
-        //        });
-        //        console.log("Total Likes: " + likes);
-        //        console.log("Total Dislikes: " + dislikes);
-        //
-        //        drawBarGraph(likes, dislikes);
-        //    });
-        //// ---------
-
     }
 
     function countRatingByVideoIDAndDraw(videoID) {
@@ -819,6 +509,6 @@
 
 
     /* Perni Close*/
-    // update! 4
+    // update! 5
 
 }());
