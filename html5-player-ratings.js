@@ -173,7 +173,7 @@
         checkVideoForCookies();
 
         countRatingByVideoIDAndDraw(_keenVideoID);
-        displayTotalViews(_videoID);
+        displayTotalViews(_keenVideoID);
 
     }
 
@@ -534,6 +534,6 @@
 
 
     /* Perni Close*/
-    // update! 9
+    // update! 10
 
 }());
