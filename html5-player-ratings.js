@@ -19,28 +19,24 @@
     script.src = "https://ajax.googleapis.com/ajax/libs/jquery/1.9.1/jquery.min.js";
     document.getElementsByTagName('head')[0].appendChild(script);
 
-    // Pernix O
-
     // Keen
 
+    // Configure a new Keen JS client
+    var _keenClient;
     var _keenVideoID;
     var _keenUserName;
     var _like = 5;
     var _dislike = 1;
 
+    var SUMMIT_EVENT_RATING = 'userVideoRating';
+    var SUMMIT_EVENT_VIEW = 'userVideoView';
 
-    // Configure a new Keen JS client
-
-    var _keenClient;
-    var _summitEventRating = 'userVideoRating';
-    var _summitEventView = 'userVideoView';
-
-    var _projectId = "550b409859949a13d1afbe31";
-    var _writeKey = "7c143a3347f7adc7c48f6820a58551175cc76a94aeb34d80afc26f9a111f28dde965e160f4287089352004454fe66bcdeab5035fb8d9e5aaec7a1d47976dec0bd45933e5daab014002a38f1d9da65ec2538a4938239ff7e3e16cb0941094003492c99d244010fc894b694c401f1d612b";
-    var _readKey = "97d46eeb80dea57583e9a01f21342635a6157b6caac3dcb65f905d1c4671c1570290e4625ed54f695884a15edbca6f70bb53333b8f55e586c75dc99141a7dbc103fc7984ded87494f36cc6826c0a750f3c62a9f4fd93bfad88b7d6ab27d910704d02b645614c889f9ad496a75cacc897";
-    var _protocol = "https";
-    var _host = "api.keen.io/3.0";
-    var _requestType = "jsonp";
+    var PROJECT_ID = "550b409859949a13d1afbe31";
+    var WRITE_KEY = "7c143a3347f7adc7c48f6820a58551175cc76a94aeb34d80afc26f9a111f28dde965e160f4287089352004454fe66bcdeab5035fb8d9e5aaec7a1d47976dec0bd45933e5daab014002a38f1d9da65ec2538a4938239ff7e3e16cb0941094003492c99d244010fc894b694c401f1d612b";
+    var READ_KEY = "97d46eeb80dea57583e9a01f21342635a6157b6caac3dcb65f905d1c4671c1570290e4625ed54f695884a15edbca6f70bb53333b8f55e586c75dc99141a7dbc103fc7984ded87494f36cc6826c0a750f3c62a9f4fd93bfad88b7d6ab27d910704d02b645614c889f9ad496a75cacc897";
+    var PROTOCOL = "https";
+    var HOST = "api.keen.io/3.0";
+    var REQUEST_TYPE = "jsonp";
 
     var player,
         videoPlayerModule,
@@ -62,12 +58,12 @@
         console.log('setup keenClient');
 
         _keenClient = new Keen({
-            projectId: _projectId,   // String (required always)
-            writeKey: _writeKey,     // String (required for sending data)
-            readKey: _readKey,       // String (required for querying data)
-            protocol: _protocol,
-            host: _host,
-            requestType: _requestType
+            projectId: PROJECT_ID,   // String (required always)
+            writeKey: WRITE_KEY,     // String (required for sending data)
+            readKey: READ_KEY,       // String (required for querying data)
+            protocol: PROTOCOL,
+            host: HOST,
+            requestType: REQUEST_TYPE
         });
     }
 
@@ -140,7 +136,7 @@
     function onMediaComplete() {
         console.log('COMPLETE VIDEO');
 
-        _keenClient.addEvent(_summitEventView, constructSubmitKeenFinishedVideo(_keenVideoID), function (err, res) {
+        _keenClient.addEvent(SUMMIT_EVENT_VIEW, constructSubmitKeenFinishedVideo(_keenVideoID), function (err, res) {
             if (err) {
                 // there was an error!
                 console.log('Keen.io summit complete error: ', err);
@@ -151,13 +147,11 @@
         });
     }
 
-    // TODO finish
     function changeVidCallback(result) {
 
         _videoID = result.id;
         _keenVideoID = 'keeid-' + _videoID;
         console.log("Media Change: " + _keenVideoID);
-        checkVideoForCookies();
 
         countRatingByVideoIDAndDraw(_keenVideoID);
         displayTotalViews(_keenVideoID);
@@ -183,7 +177,6 @@
         }
     }
 
-    // TODO finish
     function onThumbsDownClick() {
         // if unique ID is not set for this user yet...i.e., it's their first rating
         if (!_uniqueID) {
@@ -201,21 +194,6 @@
         } else {
             console.log("You already have a GUID: " + guidCookie);
         }
-    }
-
-    // TODO doing
-    function submitKeenRating(rating) {
-        console.log('submitKeenRating');
-
-        _keenClient.addEvent(_summitEventRating, constructSubmitKeenRating(_keenVideoID, rating), function (err, res) {
-            if (err) {
-                // there was an error!
-                console.log('Keen.io summit error: ', err);
-            }
-            else {
-                console.log('Keen.io successful summit: ', res);
-            }
-        });
     }
 
     function enableThumbsUpIcon() {
@@ -329,30 +307,18 @@
 
     }
 
-    function getTotalViews(videoID) {
 
-        var totalViewsQuery = new Keen.Query("count", {
-            eventCollection: _summitEventView,
-            filters: [{"property_name": "videoID", "operator": "eq", "property_value": videoID}]
-        });
+    function submitKeenRating(rating) {
+        console.log('submitKeenRating');
 
-        // Send query
-        _keenClient.run(totalViewsQuery, function (err, res) {
-
-            var playsTotal = '0';
+        _keenClient.addEvent(SUMMIT_EVENT_RATING, constructSubmitKeenRating(_keenVideoID, rating), function (err, res) {
             if (err) {
                 // there was an error!
-                console.log(err);
+                console.log('Keen.io summit error: ', err);
             }
             else {
-                // do something with res.result
-                console.log('Resultados de consulta');
-                console.log(res);
-                playsTotal = res.result ? res.result : '0';
-                console.log('VISTAS: ' + playsTotal);
+                console.log('Keen.io successful summit: ', res);
             }
-            playsTotal += ' Views';
-            $('#total-video-views').text(playsTotal);
         });
     }
 
@@ -415,7 +381,7 @@
             setup_keenClient();
             console.log('***HERE GET likes');
             countRatingByVideoIDAndDraw(_keenVideoID);
-            displayTotalViews(_videoID);
+            displayTotalViews(_keenVideoID);
         };
         scriptKeen.type = "text/javascript";
         scriptKeen.src = "https://d26b395fwzu5fz.cloudfront.net/3.2.4/keen.min.js";
@@ -493,9 +459,37 @@
         }
     }
 
+    function getTotalViews(videoID) {
+
+        var totalViewsQuery = new Keen.Query("count", {
+            eventCollection: SUMMIT_EVENT_VIEW,
+            filters: [{"property_name": "videoID", "operator": "eq", "property_value": videoID}]
+        });
+
+        // Send query
+        _keenClient.run(totalViewsQuery, function (err, res) {
+
+            var playsTotal = '0';
+            if (err) {
+                // there was an error!
+                console.log(err);
+            }
+            else {
+                // do something with res.result
+                console.log('Resultados de consulta');
+                console.log(res);
+                playsTotal = res.result ? res.result : '0';
+                console.log('VISTAS: ' + playsTotal);
+            }
+            playsTotal += ' Views';
+            $('#total-video-views').text(playsTotal);
+        });
+    }
+
+
     function countRatingByVideoIDAndDraw(videoID) {
         var likeQuery = new Keen.Query("count", {
-            eventCollection: _summitEventRating,
+            eventCollection: SUMMIT_EVENT_RATING,
             filters: [{
                 "property_name": "userRating",
                 "operator": "eq",
@@ -504,7 +498,7 @@
         });
 
         var dislikeQuery = new Keen.Query("count", {
-            eventCollection: _summitEventRating,
+            eventCollection: SUMMIT_EVENT_RATING,
             filters: [{
                 "property_name": "userRating",
                 "operator": "eq",
@@ -534,6 +528,6 @@
 
 
     /* Perni Close*/
-    // update! 12
+    // update! 13
 
 }());
