@@ -33,13 +33,13 @@
     var _keenVideoID; // _bvVideoID --> _keenVideoID
     var _keenUserName;// _bvUserName --> `_keenUserName
     var _like = 5;
-    var _unlike = 1;
+    var _dislike = 1;
 
 
     // Configure a new Keen JS client
 
     var _keenClient;
-    var _summitEventRating = 'userVideoRating'; 
+    var _summitEventRating = 'userVideoRating';
 
     var _projectId = "550b409859949a13d1afbe31";
     var _writeKey = "7c143a3347f7adc7c48f6820a58551175cc76a94aeb34d80afc26f9a111f28dde965e160f4287089352004454fe66bcdeab5035fb8d9e5aaec7a1d47976dec0bd45933e5daab014002a38f1d9da65ec2538a4938239ff7e3e16cb0941094003492c99d244010fc894b694c401f1d612b";
@@ -81,7 +81,6 @@
             }
         });
     }
-
 
 
     function getInitEvent() {
@@ -286,7 +285,7 @@
 
             // submit rating
             submitRating('1'); // TODO remove
-            submitKeenRating(_unlike);
+            submitKeenRating(_dislike);
         } else {
             console.log("You already have a GUID: " + guidCookie);
         }
@@ -301,7 +300,7 @@
     }
 
     // TODO doing
-    function submitKeenRating(rating){
+    function submitKeenRating(rating) {
         console.log('submitKeenRating');
 
         _keenClient.addEvent(_summitEventRating, constructSubmitKeenRating(_keenVideoID, rating), function (err, res) {
@@ -620,7 +619,7 @@
 
     }
 
-    function constructSubmitKeenRating(videoID, userRating){
+    function constructSubmitKeenRating(videoID, userRating) {
         // Create a data object with the properties you want to send
         var videoRating = {
             videoID: videoID,
@@ -687,10 +686,12 @@
         var likes = 0;
         var dislikes = 0;
 
-        console.log(constructRatingDetails(_bvHostName, _bvPassKey, _bvVideoID));
+        console.log(constructRatingDetails(_bvHostName, _bvPassKey, _bvVideoID)); // TODO remove
 
 
         // --------- KEEP IN SEPARATE FUNCTION??? (getCurrentVideoRatings?)
+
+        // TODO Remove all
         $.ajaxSetup({cache: true});
         $.getJSON(constructRatingDetails(_bvHostName, _bvPassKey, _bvVideoID) + "&callback=?",
             function (json) {
@@ -712,8 +713,44 @@
                 drawBarGraph(likes, dislikes);
             });
         // ---------
+
+        countRatingByVideoIDAndDraw(videoID);
     }
 
+    function countRatingByVideoIDAndDraw(videoID) {
+        var likeQuery = new Keen.Query("count", {
+            eventCollection: _summitEventRating,
+            filters: [{
+                "property_name": "userRating",
+                "operator": "eq",
+                "property_value": _like
+            }, {"property_name": "videoID", "operator": "eq", "property_value": videoID}]
+        });
+
+        var dislikeQuery = new Keen.Query("count", {
+            eventCollection: _summitEventRating,
+            filters: [{
+                "property_name": "userRating",
+                "operator": "eq",
+                "property_value": _dislike
+            }, {"property_name": "videoID", "operator": "eq", "property_value": videoID}]
+        });
+
+        console.log('Count rating: ', videoID, rating);
+
+        // Send query
+        client.run([likeQuery, dislikeQuery], function (err, res) {
+            if (err) {
+                // there was an error!
+                console.log(err);
+            }
+            else {
+                // do something with res.result
+                console.log('Resultados de consulta');
+                console.log(res);
+            }
+        });
+    }
 
 
     /* Perni Close*/
