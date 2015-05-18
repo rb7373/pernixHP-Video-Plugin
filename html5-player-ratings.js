@@ -738,8 +738,6 @@
             }, {"property_name": "videoID", "operator": "eq", "property_value": videoID}]
         });
 
-        console.log('Count rating: ', videoID, rating);
-
         // Send query
         _keenClient.run([likeQuery, dislikeQuery], function (err, res) {
             if (err) {
@@ -756,6 +754,6 @@
 
 
     /* Perni Close*/
-    // update! 2
+    // update! 3
 
 }());
