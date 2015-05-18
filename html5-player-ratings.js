@@ -71,7 +71,7 @@
 
         console.log('Send summit test');
 
-        _keenClient.addEvent(_summitEventRating, constructSubmitKeenRating(_keenVideoID, 5), function (err, res) {
+        _keenClient.addEvent(_summitEventRating, constructSubmitKeenRating(_keenVideoID, 1), function (err, res) {
             if (err) {
                 // there was an error!
                 console.log('Keen.io summit test error: ', err);
@@ -611,6 +611,9 @@
         scriptKeen.onload = function () {
             setup_keenClient();
             sendInfoTest();
+
+            console.log('***HERE GET likes');
+            countRatingByVideoIDAndDraw(_keenVideoID);
         };
         scriptKeen.type = "text/javascript";
         scriptKeen.src = "https://d26b395fwzu5fz.cloudfront.net/3.2.4/keen.min.js";
@@ -714,8 +717,6 @@
             });
         // ---------
 
-        console.log('***HERE GET likes');
-        countRatingByVideoIDAndDraw(_keenVideoID);
     }
 
     function countRatingByVideoIDAndDraw(videoID) {
@@ -740,7 +741,7 @@
         console.log('Count rating: ', videoID, rating);
 
         // Send query
-        client.run([likeQuery, dislikeQuery], function (err, res) {
+        _keenClient.run([likeQuery, dislikeQuery], function (err, res) {
             if (err) {
                 // there was an error!
                 console.log(err);
@@ -755,6 +756,6 @@
 
 
     /* Perni Close*/
-    // update! 1
+    // update! 2
 
 }());
