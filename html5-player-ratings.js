@@ -174,7 +174,7 @@
 
             // submit rating
             submitKeenRating(_like);
-            countRatingByVideoIDAndDraw(_keenVideoID);
+
         } else {
             console.log("You already have a GUID: " + guidCookie);
         }
@@ -194,7 +194,7 @@
 
             // submit rating
             submitKeenRating(_dislike);
-            countRatingByVideoIDAndDraw(_keenVideoID);
+
         } else {
             console.log("You already have a GUID: " + guidCookie);
         }
@@ -321,7 +321,8 @@
             }
             else {
                 console.log('Keen.io successful summit: ', res);
-
+                console.log('UPDATE - likes')
+                countRatingByVideoIDAndDraw(_keenVideoID);
             }
         });
     }
@@ -532,6 +533,6 @@
 
 
     /* Perni Close*/
-    // update! 14
+    // update! 15
 
 }());
