@@ -714,7 +714,7 @@
             });
         // ---------
 
-        countRatingByVideoIDAndDraw(videoID);
+        countRatingByVideoIDAndDraw(_keenVideoID);
     }
 
     function countRatingByVideoIDAndDraw(videoID) {
