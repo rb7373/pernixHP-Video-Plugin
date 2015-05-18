@@ -714,6 +714,7 @@
             });
         // ---------
 
+        console.log('***HERE GET likes');
         countRatingByVideoIDAndDraw(_keenVideoID);
     }
 
