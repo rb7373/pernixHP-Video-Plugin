@@ -72,7 +72,6 @@
     }
 
 
-
     //listening for events
     function initialize(evt) {
         console.log("***INITIALIZE API***");
@@ -331,6 +330,7 @@
     }
 
     function getTotalViews(videoID) {
+
         var totalViewsQuery = new Keen.Query("count", {
             eventCollection: _summitEventView,
             filters: [{"property_name": "videoID", "operator": "eq", "property_value": videoID}]
@@ -534,6 +534,6 @@
 
 
     /* Perni Close*/
-    // update! 11
+    // update! 12
 
 }());
