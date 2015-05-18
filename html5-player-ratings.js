@@ -426,7 +426,7 @@
             setup_keenClient();
             console.log('***HERE GET likes');
             countRatingByVideoIDAndDraw(_keenVideoID);
-            displayTotalViews(videoID);
+            displayTotalViews(_videoID);
         };
         scriptKeen.type = "text/javascript";
         scriptKeen.src = "https://d26b395fwzu5fz.cloudfront.net/3.2.4/keen.min.js";
@@ -533,6 +533,6 @@
 
 
     /* Perni Close*/
-    // update! 7
+    // update! 8
 
 }());
