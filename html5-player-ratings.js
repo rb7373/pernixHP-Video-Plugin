@@ -478,6 +478,7 @@
         }
     }
 
+    // TODO remove
     function getCurrentVideoRatings(currentBVVideoID) {
         var likes = 0;
         var dislikes = 0;
