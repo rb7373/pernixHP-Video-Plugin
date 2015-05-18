@@ -91,9 +91,9 @@
 
 
         // embed Keen.io to iframe DOM
-        loadKeenIOScripSync();
+        loadKeenIOScrip();
 
-        // --------- APPEND TAG THAT HOLDS CUSTOM ELEMENTS        
+        // --------- APPEND TAG THAT HOLDS CUSTOM ELEMENTS
         videoTag = document.getElementById('bcVideo');
         var offsets = getOffsets(videoTag);
         var playerHeight = window.innerHeight;
@@ -133,7 +133,6 @@
         // check first video for cookies
         checkVideoKeenForCookies(_keenVideoID);
 
-        displayTotalViews(_videoID);
     }
 
     /**--------------------------------------------------------- URL REQUEST FUNCTIONS **/
@@ -151,7 +150,7 @@
         videoPlayerModule.getCurrentVideo(changeVidCallback);
     }
 
-    function onMediaComplete(){
+    function onMediaComplete() {
         console.log('COMPLETE VIDEO');
 
         _keenClient.addEvent(_summitEventView, finishedVideo(_keenVideoID), function (err, res) {
@@ -174,7 +173,7 @@
         checkVideoForCookies();
 
         countRatingByVideoIDAndDraw(_keenVideoID);
-        displayTotalViews(_videoID); // TODO refractor
+        displayTotalViews(_videoID);
 
     }
 
@@ -330,6 +329,7 @@
     // TODO pending
     function displayTotalViews(videoID) {
 
+
         console.log('--------------------displayTotalViews-----------------------');
 
         // remove any existing views tags
@@ -338,9 +338,14 @@
         // re-add to custom DIV
         $('#custom-elements').append('<div id="total-video-views" style="float:right;font-family:Arial;font-size:16px;font-weight:bold;position:relative;top:8px;"></div>');
 
+        getTotalViews();
+
+    }
+
+    function getTotalViews() {
         var totalViewsQuery = new Keen.Query("count", {
             eventCollection: _summitEventRating,
-            filters: [{"property_name":"videoID","operator":"eq","property_value":videoID}]
+            filters: [{"property_name": "videoID", "operator": "eq", "property_value": videoID}]
         });
 
         // Send query
@@ -355,12 +360,11 @@
                 // do something with res.result
                 console.log('Resultados de consulta');
                 console.log(res);
-                playsTotal = res.result ? res.result: '0';
+                playsTotal = res.result ? res.result : '0';
             }
             playsTotal += ' Views';
             $('#total-video-views').text(playsTotal);
         });
-
     }
 
     /**--------------------------------------------------------- SET/GET COOKIES **/
@@ -416,12 +420,13 @@
 
     /* Pernix Open*/
 
-    function loadKeenIOScripSync() {
+    function loadKeenIOScrip() {
         var scriptKeen = document.createElement('script');
         scriptKeen.onload = function () {
             setup_keenClient();
             console.log('***HERE GET likes');
             countRatingByVideoIDAndDraw(_keenVideoID);
+            displayTotalViews(videoID);
         };
         scriptKeen.type = "text/javascript";
         scriptKeen.src = "https://d26b395fwzu5fz.cloudfront.net/3.2.4/keen.min.js";
@@ -528,6 +533,6 @@
 
 
     /* Perni Close*/
-    // update! 6
+    // update! 7
 
 }());
