@@ -31,7 +31,9 @@
     // Keen
 
     var _keenVideoID; // _bvVideoID --> _keenVideoID
-    var _keenUserName;// _bvUserName --> `
+    var _keenUserName;// _bvUserName --> `_keenUserName
+    var _like = 5;
+    var _unlike = 1;
 
 
     // Configure a new Keen JS client
@@ -227,60 +229,90 @@
         videoPlayerModule.getCurrentVideo(changeVidCallback);
     }
 
+    // TODO finish
     function changeVidCallback(result) {
         _videoID = result.id;
-        _bvVideoID = "bcvid-" + _videoID;
+        _bvVideoID = "bcvid-" + _videoID; // TODO remove
 
-        console.log("Media Change: " + _bvVideoID);
+        _keenVideoID = 'keeid-' + _videoID;
+
+        console.log("Media Change: " + _bvVideoID); // TODO remove
+
+        console.log("Media Change: " + _keenVideoID);
+
         checkVideoForCookies();
 
-        getCurrentVideoRatings(_bvVideoID);
-        displayTotalViews(_videoID);
+        getCurrentVideoRatings(_bvVideoID); // TODO refractor
+        displayTotalViews(_videoID); // TODO refractor
     }
 
+    // TODO finish
     function onThumbsUpClick() {
         // if unique ID is not set for this user yet...i.e., it's their first rating
         if (!_uniqueID) {
             _uniqueID = uniqueid();
-            _bvUserName = _uniqueID.substr(0, 23);
+            _bvUserName = _uniqueID.substr(0, 23); // TODO remove
+            _keenUserName = _uniqueID.substr(0, 23);
         }
 
         if (!guidCookie) {
             disableButtons();
-            setCookie(_bvVideoID, _uniqueID + "," + _bvVideoID + ",5");
+            setCookie(_bvVideoID, _uniqueID + "," + _bvVideoID + ",5"); // TODO remove
+            setCookie(_keenVideoID, _uniqueID + "," + _keenVideoID + ",5");
             enableThumbsUpIcon();
 
             // submit rating
-            submitRating('5');
+            submitRating('5'); // TODO remove
+            submitKeenRating(_like);
         } else {
             console.log("You already have a GUID: " + guidCookie);
         }
     }
 
+    // TODO finish
     function onThumbsDownClick() {
         // if unique ID is not set for this user yet...i.e., it's their first rating
         if (!_uniqueID) {
             _uniqueID = uniqueid();
-            _bvUserName = _uniqueID.substr(0, 23);
+            _bvUserName = _uniqueID.substr(0, 23); // TODO remove
+            _keenUserName = _uniqueID.substr(0, 23);
         }
 
         if (!guidCookie) {
             disableButtons();
-            setCookie(_bvVideoID, _uniqueID + "," + _bvVideoID + ",1");
+            setCookie(_bvVideoID, _uniqueID + "," + _bvVideoID + ",1"); //  TODO remove
+            setCookie(_keenVideoID, _uniqueID + "," + _keenVideoID + ",1");
             enableThumbsDownIcon();
 
             // submit rating
-            submitRating('1');
+            submitRating('1'); // TODO remove
+            submitKeenRating(_unlike);
         } else {
             console.log("You already have a GUID: " + guidCookie);
         }
     }
 
+    // TODO pending
     function submitRating(rating) {
         $.post(constructSubmitRating(_bvHostName, _bvPassKey, _bvVideoID, rating) + "&callback=?",
             function (json) {
                 console.log(json);
             });
+    }
+
+    // TODO doing
+    function submitKeenRating(rating){
+        console.log('submitKeenRating');
+
+        _keenClient.addEvent(_summitEventRating, constructSubmitKeenRating(_keenVideoID, rating), function (err, res) {
+            if (err) {
+                // there was an error!
+                console.log('Keen.io summit error: ', err);
+            }
+            else {
+                console.log('Keen.io successful summit: ', res);
+            }
+        });
     }
 
     function enableThumbsUpIcon() {
@@ -378,6 +410,7 @@
         console.log($('#video-ratings'));
     }
 
+    // TODO pending
     function displayTotalViews(videoID) {
         // remove any existing views tags
         $('#total-video-views').remove();
@@ -684,5 +717,6 @@
 
 
     /* Perni Close*/
+    // update! 1
 
 }());
