@@ -23,8 +23,8 @@
 
     // Keen
 
-    var _keenVideoID; // _bvVideoID --> _keenVideoID
-    var _keenUserName;// _bvUserName --> `_keenUserName
+    var _keenVideoID;
+    var _keenUserName;
     var _like = 5;
     var _dislike = 1;
 
@@ -33,6 +33,7 @@
 
     var _keenClient;
     var _summitEventRating = 'userVideoRating';
+    var _summitEventView = 'userVideoView';
 
     var _projectId = "550b409859949a13d1afbe31";
     var _writeKey = "7c143a3347f7adc7c48f6820a58551175cc76a94aeb34d80afc26f9a111f28dde965e160f4287089352004454fe66bcdeab5035fb8d9e5aaec7a1d47976dec0bd45933e5daab014002a38f1d9da65ec2538a4938239ff7e3e16cb0941094003492c99d244010fc894b694c401f1d612b";
@@ -70,6 +71,19 @@
         });
     }
 
+    function finishedVideo(videoID) {
+
+        var loadVideoEvent = {
+            type: _summitEventView,
+            videoID: videoID,
+            keen: {
+                timestamp: new Date().toISOString()
+            }
+        };
+
+        return loadVideoEvent;
+    }
+
 
     //listening for events
     function initialize(evt) {
@@ -105,6 +119,7 @@
 
         // add Media Events
         videoPlayerModule.addEventListener(brightcove.api.events.MediaEvent.CHANGE, onMediaChange);
+        videoPlayerModule.addEventListener(brightcove.api.events.MediaEvent.COMPLETE, onMediaComplete);
     }
 
     function constructURLs(result) {
@@ -134,6 +149,20 @@
         console.log("Media Change");
         resetButtonIcons();
         videoPlayerModule.getCurrentVideo(changeVidCallback);
+    }
+
+    function onMediaComplete(){
+        console.log('COMPLETE VIDEO');
+
+        _keenClient.addEvent(_summitEventView, finishedVideo(_keenVideoID), function (err, res) {
+            if (err) {
+                // there was an error!
+                console.log('Keen.io summit complete error: ', err);
+            }
+            else {
+                console.log('Keen.io successful complete summit: ', res);
+            }
+        });
     }
 
     // TODO finish
@@ -303,36 +332,34 @@
 
         console.log('--------------------displayTotalViews-----------------------');
 
-        //// remove any existing views tags
-        //$('#total-video-views').remove();
-        //
-        //// re-add to custom DIV
-        //$('#custom-elements').append('<div id="total-video-views" style="float:right;font-family:Arial;font-size:16px;font-weight:bold;position:relative;top:8px;"></div>');
-        //
-        //// overwrite Media API token if present in override variables
-        //if (_parentURL.indexOf('apiToken=') !== -1) {
-        //    var apiTokenIndex = _parentURL.indexOf('apiToken=');
-        //    _mediaAPIToken = _parentURL.substring(apiTokenIndex + 9);
-        //
-        //    if (_mediaAPIToken.indexOf('&') !== -1) {
-        //        var apiTokenEndIndex = _mediaAPIToken.indexOf('&');
-        //        _mediaAPIToken = _mediaAPIToken.substring(0, apiTokenEndIndex);
-        //    }
-        //
-        //    console.log("Media API Token was overriden to: " + _mediaAPIToken);
-        //}
-        //
-        //var mediaAPIRequest = "http://api.brightcove.com/services/library?command=find_video_by_id&video_fields=playsTotal&token=" + _mediaAPIToken + "&video_id=" + videoID;
-        //console.log(mediaAPIRequest);
-        //
-        //$.getJSON(mediaAPIRequest + "&callback=?", function (data) {
-        //    var items = [];
-        //
-        //    var playsTotal = data.playsTotal ? data.playsTotal : "0";
-        //    playsTotal += " Views";
-        //
-        //    $('#total-video-views').text(playsTotal);
-        //});
+        // remove any existing views tags
+        $('#total-video-views').remove();
+
+        // re-add to custom DIV
+        $('#custom-elements').append('<div id="total-video-views" style="float:right;font-family:Arial;font-size:16px;font-weight:bold;position:relative;top:8px;"></div>');
+
+        var totalViewsQuery = new Keen.Query("count", {
+            eventCollection: _summitEventRating,
+            filters: [{"property_name":"videoID","operator":"eq","property_value":videoID}]
+        });
+
+        // Send query
+        _keenClient.run(totalViewsQuery, function (err, res) {
+
+            var playsTotal = '0';
+            if (err) {
+                // there was an error!
+                console.log(err);
+            }
+            else {
+                // do something with res.result
+                console.log('Resultados de consulta');
+                console.log(res);
+                playsTotal = res.result ? res.result: '0';
+            }
+            playsTotal += ' Views';
+            $('#total-video-views').text(playsTotal);
+        });
 
     }
 
@@ -387,25 +414,17 @@
         return (idstr);
     }
 
-    //function console.log(message) {
-    //    //return;
-    //    console.log(message);
-    //}
-
-
     /* Pernix Open*/
 
     function loadKeenIOScripSync() {
         var scriptKeen = document.createElement('script');
         scriptKeen.onload = function () {
             setup_keenClient();
-
             console.log('***HERE GET likes');
             countRatingByVideoIDAndDraw(_keenVideoID);
         };
         scriptKeen.type = "text/javascript";
         scriptKeen.src = "https://d26b395fwzu5fz.cloudfront.net/3.2.4/keen.min.js";
-        //scriptKeen.async = false;
         document.getElementsByTagName('head')[0].appendChild(scriptKeen);
 
     }
@@ -509,6 +528,6 @@
 
 
     /* Perni Close*/
-    // update! 5
+    // update! 6
 
 }());
