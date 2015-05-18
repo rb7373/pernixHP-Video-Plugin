@@ -351,7 +351,66 @@
         console.log("display UI Buttons");
     }
 
+    // TODO remove
     function drawBarGraph(likes, dislikes) {
+        //// remove any existing bar graph data
+        //$('#video-ratings').remove();
+        //
+        //// convert amount of likes to percent
+        //var totalVotes = likes + dislikes;
+        //var likesPercent = totalVotes ? likes / totalVotes : 0;
+        //
+        //console.log("Percentage of Likes: " + likesPercent + "%");
+        //
+        //// to get width, multiply width of bar against percent
+        //var likeBarWidth = 178 * likesPercent;
+        //
+        //$('#custom-elements').append('<div id="video-ratings" style="position:relative;float:left;width:178px;top:0;"><canvas id="barGraphBG" width="178" height="8" style="position:absolute;top:0;left:0;"></canvas></div>');
+        //
+        //var canvasBG = document.getElementById('barGraphBG');
+        //var contextBG = canvasBG.getContext('2d');
+        //
+        //contextBG.beginPath();
+        //contextBG.rect(0, 0, 178, 8);
+        //contextBG.fillStyle = "#bbbbbb";
+        //contextBG.fill();
+        //
+        //console.log(canvasBG);
+        //
+        //$('#video-ratings').append('<canvas id="canvasLikes" width="178" height="8" style="position:absolute;top:0px;left:0;"></canvas>');
+        //
+        //var likeCanvas = document.getElementById('canvasLikes');
+        //var likeContext = likeCanvas.getContext('2d');
+        //var likeWidth = likeBarWidth;
+        //
+        //likeContext.beginPath();
+        //likeContext.rect(0, 0, likeWidth, 8);
+        //likeContext.fillStyle = "#0990d2";
+        //likeContext.fill();
+        //
+        //console.log(likeCanvas);
+        //
+        //// print likes and dislikes
+        //$('#video-ratings').append('<p id="total-likes"></p>');
+        //$('#video-ratings').append('<p id="total-dislikes"></p>');
+        //$('#video-ratings > p').css({
+        //    'font-family': 'Arial',
+        //    'font-size': '10px',
+        //    'font-weight': 'bold',
+        //    'position': 'absolute',
+        //    'top': '2px',
+        //});
+        //$('#video-ratings > p:last-child').css({'right': '0'});
+        //
+        //var totalLikesDiv = document.getElementById('total-likes');
+        //var totalDislikesDiv = document.getElementById('total-dislikes');
+        //
+        //totalLikesDiv.innerHTML = (likes == 1) ? likes + " Like" : likes + " Likes";
+        //totalDislikesDiv.innerHTML = (dislikes == 1) ? dislikes + " Dislike" : dislikes + " Dislikes";
+        //console.log($('#video-ratings'));
+    }
+
+    function drawBarGraphLikesDislikes(likes, dislikes) {
         // remove any existing bar graph data
         $('#video-ratings').remove();
 
@@ -686,36 +745,36 @@
     }
 
     function getCurrentVideoRatings(currentBVVideoID) {
-        var likes = 0;
-        var dislikes = 0;
-
-        console.log(constructRatingDetails(_bvHostName, _bvPassKey, _bvVideoID)); // TODO remove
-
-
-        // --------- KEEP IN SEPARATE FUNCTION??? (getCurrentVideoRatings?)
-
-        // TODO Remove all
-        $.ajaxSetup({cache: true});
-        $.getJSON(constructRatingDetails(_bvHostName, _bvPassKey, _bvVideoID) + "&callback=?",
-            function (json) {
-                console.log("JSONP Response: ");
-                console.log(json);
-                jQuery.each(json.Results, function (index, result) {
-                    console.log(result);
-                    if (result.Rating == "1") {
-                        console.log("Increment Dislikes");
-                        dislikes++;
-                    } else if (result.Rating == "5") {
-                        console.log("Increment Likes");
-                        likes++;
-                    }
-                });
-                console.log("Total Likes: " + likes);
-                console.log("Total Dislikes: " + dislikes);
-
-                drawBarGraph(likes, dislikes);
-            });
-        // ---------
+        //var likes = 0;
+        //var dislikes = 0;
+        //
+        //console.log(constructRatingDetails(_bvHostName, _bvPassKey, _bvVideoID)); // TODO remove
+        //
+        //
+        //// --------- KEEP IN SEPARATE FUNCTION??? (getCurrentVideoRatings?)
+        //
+        //// TODO Remove all
+        //$.ajaxSetup({cache: true});
+        //$.getJSON(constructRatingDetails(_bvHostName, _bvPassKey, _bvVideoID) + "&callback=?",
+        //    function (json) {
+        //        console.log("JSONP Response: ");
+        //        console.log(json);
+        //        jQuery.each(json.Results, function (index, result) {
+        //            console.log(result);
+        //            if (result.Rating == "1") {
+        //                console.log("Increment Dislikes");
+        //                dislikes++;
+        //            } else if (result.Rating == "5") {
+        //                console.log("Increment Likes");
+        //                likes++;
+        //            }
+        //        });
+        //        console.log("Total Likes: " + likes);
+        //        console.log("Total Dislikes: " + dislikes);
+        //
+        //        drawBarGraph(likes, dislikes);
+        //    });
+        //// ---------
 
     }
 
@@ -748,12 +807,18 @@
                 // do something with res.result
                 console.log('Resultados de consulta');
                 console.log(res);
+
+                var likes = res[0].result;
+                var dislikes = res[1].result;
+
+                drawBarGraphLikesDislikes(likes, dislikes);
+
             }
         });
     }
 
 
     /* Perni Close*/
-    // update! 3
+    // update! 4
 
 }());
