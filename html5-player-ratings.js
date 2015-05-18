@@ -338,13 +338,13 @@
         // re-add to custom DIV
         $('#custom-elements').append('<div id="total-video-views" style="float:right;font-family:Arial;font-size:16px;font-weight:bold;position:relative;top:8px;"></div>');
 
-        getTotalViews();
+        getTotalViews(videoID);
 
     }
 
-    function getTotalViews() {
+    function getTotalViews(videoID) {
         var totalViewsQuery = new Keen.Query("count", {
-            eventCollection: _summitEventRating,
+            eventCollection: _summitEventView,
             filters: [{"property_name": "videoID", "operator": "eq", "property_value": videoID}]
         });
 
@@ -361,6 +361,7 @@
                 console.log('Resultados de consulta');
                 console.log(res);
                 playsTotal = res.result ? res.result : '0';
+                console.log('VISTAS: ' + playsTotal);
             }
             playsTotal += ' Views';
             $('#total-video-views').text(playsTotal);
@@ -533,6 +534,6 @@
 
 
     /* Perni Close*/
-    // update! 8
+    // update! 9
 
 }());
