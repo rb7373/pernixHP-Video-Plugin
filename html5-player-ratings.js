@@ -4,7 +4,6 @@
     var VIDEO_ID;
     var GRID_COOKIE;
     var UNIQUE_ID;
-
     var VIDEO_TAG;
 
     // Button Images
