@@ -554,11 +554,12 @@
 
 
     function debug(msg){
-        return console.log(msg)
+        return;
+        //return console.log(msg);
     }
 
 
     /* Perni Close*/
-    // update! 18
+    // update! 19
 
 }());
