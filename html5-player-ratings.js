@@ -3,6 +3,7 @@
 
     var VIDEO_ID;
     var GRID_COOKIE;
+    var EXPIRE_DAYS = 365;
     var UNIQUE_ID;
     var VIDEO_TAG;
 
@@ -350,12 +351,9 @@
     /**--------------------------------------------------------- SET/GET COOKIES **/
     function setCookie(c_name, value, exdays) {
         var exdate = new Date();
-
-        var now = new Date();
-        now.setMonth( now.getMonth() + 1 );
-
+        exdays = exdays ? exdays : EXPIRE_DAYS;
         exdate.setDate(exdate.getDate() + exdays);
-        var c_value = escape(value) + ((exdays === null) ? "; expires=" + now.toUTCString() : "; expires=" + exdate.toUTCString());
+        var c_value = escape(value) + ((exdays === null) ? "" : "; expires=" + exdate.toUTCString());
         document.cookie = c_name + "=" + c_value;
     }
 
