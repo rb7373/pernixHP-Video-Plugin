@@ -29,6 +29,7 @@
     var DISLIKE_RATING = 1;
     var CURRENT_LIKES_COUNT;
     var CURRENT_DISLIKES_COUNT;
+    var CURRENT_PLAYS_TOTAL;
 
     var SUMMIT_EVENT_RATING = 'userVideoRating';
     var SUMMIT_EVENT_VIEW = 'userVideoView';
@@ -144,7 +145,7 @@
             }
             else {
                 console.log('Keen.io successful complete summit: ', res);
-                displayTotalViews(KEEN_VIDEO_ID);
+                updateTotalViews(++CURRENT_PLAYS_TOTAL);
             }
         });
 
@@ -323,6 +324,15 @@
 
     }
 
+    function updateTotalViews(playsTotal){
+
+        console.log('VISTAS: ' + playsTotal);
+
+        playsTotal += ' Views';
+        $('#total-video-views').text(playsTotal);
+
+    }
+
 
     function submitKeenRating(rating) {
         console.log('submitKeenRating');
@@ -485,7 +495,7 @@
         // Send query
         KEEN_CLIENT.run(totalViewsQuery, function (err, res) {
 
-            var playsTotal = '0';
+            var playsTotal = 0;
             if (err) {
                 // there was an error!
                 console.log(err);
@@ -494,7 +504,8 @@
                 // do something with res.result
                 console.log('Resultados de consulta');
                 console.log(res);
-                playsTotal = res.result ? res.result : '0';
+                playsTotal = res.result ? res.result : 0;
+                CURRENT_PLAYS_TOTAL = playsTotal;
                 console.log('VISTAS: ' + playsTotal);
             }
             playsTotal += ' Views';
@@ -546,6 +557,6 @@
 
 
     /* Perni Close*/
-    // update! 16
+    // update! 17
 
 }());
