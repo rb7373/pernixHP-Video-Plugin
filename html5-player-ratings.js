@@ -4,6 +4,7 @@
     var VIDEO_ID;
     var GRID_COOKIE;
     var EXPIRE_DAYS = 365;
+
     var UNIQUE_ID;
     var VIDEO_TAG;
 
@@ -25,6 +26,7 @@
     var KEEN_CLIENT;
     var KEEN_VIDEO_ID;
     var KEEN_USER_NAME;
+    var KEEN_USER_NAME_LENGTH = 23;
     var LIKE_RATING = 5;
     var DISLIKE_RATING = 1;
     var CURRENT_LIKES_COUNT;
@@ -56,7 +58,7 @@
         experienceModule.addEventListener(brightcove.api.events.ExperienceEvent.TEMPLATE_READY, initialize);
     }
 
-    function setupKEEN_CLIENT() {
+    function setupKeenClient() {
 
         debug('setup keenClient');
 
@@ -74,10 +76,9 @@
     //listening for events
     function initialize(evt) {
         debug("***INITIALIZE API***");
-
-
+        
         // embed Keen.io to iframe DOM
-        loadKeenIOScrip();
+        loadKeenIOScript();
 
         // --------- APPEND TAG THAT HOLDS CUSTOM ELEMENTS
         VIDEO_TAG = document.getElementById('bcVideo');
@@ -124,7 +125,7 @@
 
     $(document).ready(function () {
         debug("Jquery");
-        debug(uniqueid());
+        debug(getUniqueID());
     });
 
     /**--------------------------------------------------------- EVENT HANDLERS **/
@@ -132,7 +133,7 @@
     function onMediaChange() {
         debug("Media Change");
         resetButtonIcons();
-        videoPlayerModule.getCurrentVideo(changeVidCallback);
+        videoPlayerModule.getCurrentVideo(onChangeVideo);
     }
 
     function onMediaComplete() {
@@ -151,7 +152,7 @@
 
     }
 
-    function changeVidCallback(result) {
+    function onChangeVideo(result) {
 
         VIDEO_ID = result.id;
         KEEN_VIDEO_ID = 'keeid-' + VIDEO_ID;
@@ -165,13 +166,13 @@
     function onThumbsUpClick() {
         // if unique ID is not set for this user yet...i.e., it's their first rating
         if (!UNIQUE_ID) {
-            UNIQUE_ID = uniqueid();
-            KEEN_USER_NAME = UNIQUE_ID.substr(0, 23);
+            UNIQUE_ID = getUniqueID();
+            KEEN_USER_NAME = UNIQUE_ID.substr(0, KEEN_USER_NAME_LENGTH);
         }
 
         if (!GRID_COOKIE) {
             disableButtons();
-            setCookie(KEEN_VIDEO_ID, UNIQUE_ID + "," + KEEN_VIDEO_ID + ",5");
+            setCookie(KEEN_VIDEO_ID, UNIQUE_ID + "," + KEEN_VIDEO_ID + "," + LIKE_RATING);
             enableThumbsUpIcon();
 
             debug('----------Update Bar Graph---------------');
@@ -179,7 +180,6 @@
 
             // submit rating
             submitKeenRating(LIKE_RATING);
-
 
         } else {
             debug("You already have a GUID: " + GRID_COOKIE);
@@ -189,13 +189,13 @@
     function onThumbsDownClick() {
         // if unique ID is not set for this user yet...i.e., it's their first rating
         if (!UNIQUE_ID) {
-            UNIQUE_ID = uniqueid();
-            KEEN_USER_NAME = UNIQUE_ID.substr(0, 23);
+            UNIQUE_ID = getUniqueID();
+            KEEN_USER_NAME = UNIQUE_ID.substr(0, KEEN_USER_NAME_LENGTH);
         }
 
         if (!GRID_COOKIE) {
             disableButtons();
-            setCookie(KEEN_VIDEO_ID, UNIQUE_ID + "," + KEEN_VIDEO_ID + ",1");
+            setCookie(KEEN_VIDEO_ID, UNIQUE_ID + "," + KEEN_VIDEO_ID + "," + DISLIKE_RATING);
             enableThumbsDownIcon();
 
             debug('----------Update Bar Graph---------------');
@@ -230,8 +230,6 @@
         $('#thumbs-down').children('img').attr('src', THUMBS_DOWN_IMG);
         $('#thumbs-up, #thumbs-down').css({'cursor': 'pointer'});
     }
-
-    /**--------------------------------------------------------- UI ELEMENTS **/
 
     function displayUIButtons() {
         $('#custom-elements').append('<div class="ratings"><div id="thumbs-up"><img src="' + THUMBS_UP_IMG + '" /></div><div id="thumbs-down"><img src="' + THUMBS_DOWN_IMG + '" /></div></div>');
@@ -311,7 +309,6 @@
 
     function displayTotalViews(videoID) {
 
-
         debug('--------------------displayTotalViews-----------------------');
 
         // remove any existing views tags
@@ -324,7 +321,7 @@
 
     }
 
-    function updateTotalViews(playsTotal){
+    function updateTotalViews(playsTotal) {
 
         debug('VISTAS: ' + playsTotal);
 
@@ -385,7 +382,7 @@
     }
 
     /**----------------------------UNIQUE ID **/
-    function uniqueid() {
+    function getUniqueID() {
         // always start with a letter (for DOM friendlyness)
         var idstr = String.fromCharCode(Math.floor((Math.random() * 25) + 65));
         do {
@@ -400,12 +397,11 @@
         return (idstr);
     }
 
-    /* Pernix Open*/
 
-    function loadKeenIOScrip() {
+    function loadKeenIOScript() {
         var scriptKeen = document.createElement('script');
         scriptKeen.onload = function () {
-            setupKEEN_CLIENT();
+            setupKeenClient();
             debug('***HERE GET likes');
             countRatingByVideoIDAndDraw(KEEN_VIDEO_ID);
             displayTotalViews(KEEN_VIDEO_ID);
@@ -451,21 +447,21 @@
             var cookieArray = GRID_COOKIE.split(",");
             debug(cookieArray);
 
-            // set the uniqueID to the existing one in the cookie:
+            // set the getUniqueID to the existing one in the cookie:
             UNIQUE_ID = cookieArray[0];
             debug("Existing User ID Found: " + UNIQUE_ID);
-            KEEN_USER_NAME = UNIQUE_ID.substr(0, 23);
+            KEEN_USER_NAME = UNIQUE_ID.substr(0, KEEN_USER_NAME_LENGTH);
 
             if (cookieArray.indexOf(KEEN_VIDEO_ID) !== -1) {
                 debug("This is the Video recorded in the cookie!");
                 debug(cookieArray[2]);
-                if (cookieArray[2] == "5") {
+                if (cookieArray[2] == LIKE_RATING) {
                     debug("This Video was rated a Thumbs Up!");
                     $('#thumbs-up').ready(function () {
                         debug("Thumbs Up is ready.");
                     });
                     enableThumbsUpIcon();
-                } else if (cookieArray[2] == "1") {
+                } else if (cookieArray[2] == DISLIKE_RATING) {
                     debug("This Video was rated a Thumbs Down...");
                     $('#thumbs-down').ready(function () {
                         debug("Thumbs Down is ready.");
@@ -502,8 +498,6 @@
                 debug(err);
             }
             else {
-                // do something with res.result
-                debug('Resultados de consulta');
                 debug(res);
                 playsTotal = res.result ? res.result : 0;
                 CURRENT_PLAYS_TOTAL = playsTotal;
@@ -541,8 +535,7 @@
                 debug(err);
             }
             else {
-                // do something with res.result
-                debug('Resultados de consulta');
+
                 debug(res);
 
                 var likes = res[0].result;
@@ -555,13 +548,12 @@
     }
 
 
-    function debug(msg){
+    function debug(msg) {
         return;
         //return console.log(msg);
     }
 
-
     /* Perni Close*/
-    // update! 21
+    // update! 22
 
 }());
