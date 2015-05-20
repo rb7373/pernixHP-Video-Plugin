@@ -1,11 +1,11 @@
 (function () {
     //global variables
 
-    var _videoID;
+    var VIDEO_ID;
+    var GRID_COOKIE;
+    var UNIQUE_ID;
 
-    var guidCookie;
-    var _uniqueID;
-    var videoTag;
+    var VIDEO_TAG;
 
     // Button Images
     var THUMBS_UP_IMG = "data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAADMAAAAkCAYAAAAkcgIJAAAAGXRFWHRTb2Z0d2FyZQBBZG9iZSBJbWFnZVJlYWR5ccllPAAAA2ZpVFh0WE1MOmNvbS5hZG9iZS54bXAAAAAAADw/eHBhY2tldCBiZWdpbj0i77u/IiBpZD0iVzVNME1wQ2VoaUh6cmVTek5UY3prYzlkIj8+IDx4OnhtcG1ldGEgeG1sbnM6eD0iYWRvYmU6bnM6bWV0YS8iIHg6eG1wdGs9IkFkb2JlIFhNUCBDb3JlIDUuMC1jMDYwIDYxLjEzNDc3NywgMjAxMC8wMi8xMi0xNzozMjowMCAgICAgICAgIj4gPHJkZjpSREYgeG1sbnM6cmRmPSJodHRwOi8vd3d3LnczLm9yZy8xOTk5LzAyLzIyLXJkZi1zeW50YXgtbnMjIj4gPHJkZjpEZXNjcmlwdGlvbiByZGY6YWJvdXQ9IiIgeG1sbnM6eG1wTU09Imh0dHA6Ly9ucy5hZG9iZS5jb20veGFwLzEuMC9tbS8iIHhtbG5zOnN0UmVmPSJodHRwOi8vbnMuYWRvYmUuY29tL3hhcC8xLjAvc1R5cGUvUmVzb3VyY2VSZWYjIiB4bWxuczp4bXA9Imh0dHA6Ly9ucy5hZG9iZS5jb20veGFwLzEuMC8iIHhtcE1NOk9yaWdpbmFsRG9jdW1lbnRJRD0ieG1wLmRpZDowMjgwMTE3NDA3MjA2ODExQTc0OUM0NTg4RUZEQjlENSIgeG1wTU06RG9jdW1lbnRJRD0ieG1wLmRpZDo2REE4OEZGRDc2NzQxMUUyQkQ5QkJDMzVCODk4MUVBNyIgeG1wTU06SW5zdGFuY2VJRD0ieG1wLmlpZDo2REE4OEZGQzc2NzQxMUUyQkQ5QkJDMzVCODk4MUVBNyIgeG1wOkNyZWF0b3JUb29sPSJBZG9iZSBQaG90b3Nob3AgQ1M1IE1hY2ludG9zaCI+IDx4bXBNTTpEZXJpdmVkRnJvbSBzdFJlZjppbnN0YW5jZUlEPSJ4bXAuaWlkOjAzODAxMTc0MDcyMDY4MTFBNzQ5QzQ1ODhFRkRCOUQ1IiBzdFJlZjpkb2N1bWVudElEPSJ4bXAuZGlkOjAyODAxMTc0MDcyMDY4MTFBNzQ5QzQ1ODhFRkRCOUQ1Ii8+IDwvcmRmOkRlc2NyaXB0aW9uPiA8L3JkZjpSREY+IDwveDp4bXBtZXRhPiA8P3hwYWNrZXQgZW5kPSJyIj8+a4LF9AAAAsZJREFUeNrsmE9IFFEcx7+zOzuzf9Rdd1NMTaM/ZGFZFymhPwcpqLB/Qp48FFEgFpGHOnQob93qkOHFQ0EXT1FJp6yINaPsEoQZmNkfNF13dnf2/0y/N7GWEFLbFvMGf/BbZt/AzPu873u/930jKIoyB8ALPiNC2Ud5njJuA99RTHmacoiyiHeYXGxi6lgFhsVRK8GUWQkGSzC/ipQGXHmjouHBLJoHQ3g8neYX5v7nJG6Ox3FxgwfbyySceK7g7qfkf4URC/WgD2oWXocNrStktEJGhdOGjhcRRDM62mqcfCnTUiUjqem4Oqoa/0+udqF7YxG6XkXR+y7OlzK1bjsu1XsMNTb7ROwsl9C+0okSh4AzLyNQSKGudW5+qtne5TJOrXHjHKkxqWpG20FSrK+xBD1jKrpfx/4pjPA3RnM6qSGc1iHkRoYu2PWxYQV+2WZAFIvf7wZn0mgfUnCA4DrWumCn5hpSs4ARzhvm2lsVN8bicFOvtJ/aWSdZmY5mNNza6sW2gGP+3kgog06acjGack7iCDb7zQFTNzCDy7RGtvgc1Hl9odwEJNJPrdsG2S4sfCMpOR7LgoRDXYlYUJi8n8b62BSQUO3+s2XnpYLQ4BPNVQAa/Q7sfhRCWzCMLwmNbzvD1gKbXLuoBLPRNkPkrfez2TT2sVJMmyP3RnNPhYTBqRTOjkRw52OSb5hDVU6Uk//qn0zia0rje5q9J2PJzOXADh/qvSLfygQkG5bRZnF7IoGHNN2YG+AWplQScGG9hzxX3DCXo5Esv9Ms583YLt7f5EWl6/fHJZHVQUZg3reZAoadX1jHIuS1pmjjzOqLOFrhhz+7Tg6auenjq1zmgTlS7cQTOusffjqHUjpl6ovZc+M7gQ6ViFsqZWOzNdURwGQRXvrUZGaYrJVgJqwE02slmB7Ke1YqAPspOymHeV5D3wQYAI0P8GntKSBWAAAAAElFTkSuQmCC";
@@ -22,11 +22,13 @@
     // Keen
 
     // Configure a new Keen JS client
-    var _keenClient;
-    var _keenVideoID;
-    var _keenUserName;
-    var _like = 5;
-    var _dislike = 1;
+    var KEEN_CLIENT;
+    var KEEN_VIDEO_ID;
+    var KEEN_USER_NAME;
+    var LIKE_RATING = 5;
+    var DISLIKE_RATING = 1;
+    var CURRENT_LIKES_COUNT;
+    var CURRENT_DISLIKES_COUNT;
 
     var SUMMIT_EVENT_RATING = 'userVideoRating';
     var SUMMIT_EVENT_VIEW = 'userVideoView';
@@ -53,11 +55,11 @@
         experienceModule.addEventListener(brightcove.api.events.ExperienceEvent.TEMPLATE_READY, initialize);
     }
 
-    function setup_keenClient() {
+    function setupKEEN_CLIENT() {
 
         console.log('setup keenClient');
 
-        _keenClient = new Keen({
+        KEEN_CLIENT = new Keen({
             projectId: PROJECT_ID,   // String (required always)
             writeKey: WRITE_KEY,     // String (required for sending data)
             readKey: READ_KEY,       // String (required for querying data)
@@ -77,13 +79,12 @@
         loadKeenIOScrip();
 
         // --------- APPEND TAG THAT HOLDS CUSTOM ELEMENTS
-        videoTag = document.getElementById('bcVideo');
-        var offsets = getOffsets(videoTag);
+        VIDEO_TAG = document.getElementById('bcVideo');
+        var offsets = getOffsets(VIDEO_TAG);
         var playerHeight = window.innerHeight;
         console.log("Player Height: " + playerHeight);
         var playerWidth = window.innerWidth;
         console.log("Player Width: " + playerWidth);
-        var videoParent = $(videoTag).parent();
 
         $(document.body).append('<div id="custom-elements"></div>');
         $('#custom-elements').css({
@@ -106,15 +107,15 @@
     }
 
     function constructURLs(result) {
-        _videoID = result.id;
+        VIDEO_ID = result.id;
 
-        _keenVideoID = 'keeid-' + _videoID;
+        KEEN_VIDEO_ID = 'keeid-' + VIDEO_ID;
 
         // get existing cookies on Player Load
-        console.log("Player Load First Video ID: " + _keenVideoID);
+        console.log("Player Load First Video ID: " + KEEN_VIDEO_ID);
 
         // check first video for cookies
-        checkVideoKeenForCookies(_keenVideoID);
+        checkVideoKeenForCookies(KEEN_VIDEO_ID);
 
     }
 
@@ -136,14 +137,14 @@
     function onMediaComplete() {
         console.log('COMPLETE VIDEO');
 
-        _keenClient.addEvent(SUMMIT_EVENT_VIEW, constructSubmitKeenFinishedVideo(_keenVideoID), function (err, res) {
+        KEEN_CLIENT.addEvent(SUMMIT_EVENT_VIEW, constructSubmitKeenFinishedVideo(KEEN_VIDEO_ID), function (err, res) {
             if (err) {
                 // there was an error!
                 console.log('Keen.io summit complete error: ', err);
             }
             else {
                 console.log('Keen.io successful complete summit: ', res);
-                displayTotalViews(_keenVideoID);
+                displayTotalViews(KEEN_VIDEO_ID);
             }
         });
 
@@ -151,52 +152,59 @@
 
     function changeVidCallback(result) {
 
-        _videoID = result.id;
-        _keenVideoID = 'keeid-' + _videoID;
-        console.log("Media Change: " + _keenVideoID);
+        VIDEO_ID = result.id;
+        KEEN_VIDEO_ID = 'keeid-' + VIDEO_ID;
+        console.log("Media Change: " + KEEN_VIDEO_ID);
 
-        countRatingByVideoIDAndDraw(_keenVideoID);
-        displayTotalViews(_keenVideoID);
+        countRatingByVideoIDAndDraw(KEEN_VIDEO_ID);
+        displayTotalViews(KEEN_VIDEO_ID);
 
     }
 
     function onThumbsUpClick() {
         // if unique ID is not set for this user yet...i.e., it's their first rating
-        if (!_uniqueID) {
-            _uniqueID = uniqueid();
-            _keenUserName = _uniqueID.substr(0, 23);
+        if (!UNIQUE_ID) {
+            UNIQUE_ID = uniqueid();
+            KEEN_USER_NAME = UNIQUE_ID.substr(0, 23);
         }
 
-        if (!guidCookie) {
+        if (!GRID_COOKIE) {
             disableButtons();
-            setCookie(_keenVideoID, _uniqueID + "," + _keenVideoID + ",5");
+            setCookie(KEEN_VIDEO_ID, UNIQUE_ID + "," + KEEN_VIDEO_ID + ",5");
             enableThumbsUpIcon();
 
+            console.log('----------Update Bar Graph---------------');
+            drawBarGraphLikesDislikes(++CURRENT_LIKES_COUNT, CURRENT_DISLIKES_COUNT);
+
             // submit rating
-            submitKeenRating(_like);
+            submitKeenRating(LIKE_RATING);
+
 
         } else {
-            console.log("You already have a GUID: " + guidCookie);
+            console.log("You already have a GUID: " + GRID_COOKIE);
         }
     }
 
     function onThumbsDownClick() {
         // if unique ID is not set for this user yet...i.e., it's their first rating
-        if (!_uniqueID) {
-            _uniqueID = uniqueid();
-            _keenUserName = _uniqueID.substr(0, 23);
+        if (!UNIQUE_ID) {
+            UNIQUE_ID = uniqueid();
+            KEEN_USER_NAME = UNIQUE_ID.substr(0, 23);
         }
 
-        if (!guidCookie) {
+        if (!GRID_COOKIE) {
             disableButtons();
-            setCookie(_keenVideoID, _uniqueID + "," + _keenVideoID + ",1");
+            setCookie(KEEN_VIDEO_ID, UNIQUE_ID + "," + KEEN_VIDEO_ID + ",1");
             enableThumbsDownIcon();
 
+            console.log('----------Update Bar Graph---------------');
+            drawBarGraphLikesDislikes(CURRENT_LIKES_COUNT, ++CURRENT_DISLIKES_COUNT);
+
             // submit rating
-            submitKeenRating(_dislike);
+            submitKeenRating(DISLIKE_RATING);
 
         } else {
-            console.log("You already have a GUID: " + guidCookie);
+            console.log("You already have a GUID: " + GRID_COOKIE);
         }
     }
 
@@ -238,6 +246,10 @@
     }
 
     function drawBarGraphLikesDislikes(likes, dislikes) {
+
+        CURRENT_LIKES_COUNT = likes;
+        CURRENT_DISLIKES_COUNT = dislikes;
+
         // remove any existing bar graph data
         $('#video-ratings').remove();
 
@@ -283,7 +295,7 @@
             'font-size': '10px',
             'font-weight': 'bold',
             'position': 'absolute',
-            'top': '2px',
+            'top': '2px'
         });
         $('#video-ratings > p:last-child').css({'right': '0'});
 
@@ -294,6 +306,7 @@
         totalDislikesDiv.innerHTML = (dislikes == 1) ? dislikes + " Dislike" : dislikes + " Dislikes";
         console.log($('#video-ratings'));
     }
+
 
     function displayTotalViews(videoID) {
 
@@ -314,15 +327,13 @@
     function submitKeenRating(rating) {
         console.log('submitKeenRating');
 
-        _keenClient.addEvent(SUMMIT_EVENT_RATING, constructSubmitKeenRating(_keenVideoID, rating), function (err, res) {
+        KEEN_CLIENT.addEvent(SUMMIT_EVENT_RATING, constructSubmitKeenRating(KEEN_VIDEO_ID, rating), function (err, res) {
             if (err) {
                 // there was an error!
                 console.log('Keen.io summit error: ', err);
             }
             else {
                 console.log('Keen.io successful summit: ', res);
-                console.log('UPDATE - likes')
-                countRatingByVideoIDAndDraw(_keenVideoID);
             }
         });
     }
@@ -331,7 +342,7 @@
     function setCookie(c_name, value, exdays) {
         var exdate = new Date();
         exdate.setDate(exdate.getDate() + exdays);
-        var c_value = escape(value) + ((exdays == null) ? "" : "; expires=" + exdate.toUTCString());
+        var c_value = escape(value) + ((exdays === null) ? "" : "; expires=" + exdate.toUTCString());
         document.cookie = c_name + "=" + c_value;
     }
 
@@ -383,10 +394,10 @@
     function loadKeenIOScrip() {
         var scriptKeen = document.createElement('script');
         scriptKeen.onload = function () {
-            setup_keenClient();
+            setupKEEN_CLIENT();
             console.log('***HERE GET likes');
-            countRatingByVideoIDAndDraw(_keenVideoID);
-            displayTotalViews(_keenVideoID);
+            countRatingByVideoIDAndDraw(KEEN_VIDEO_ID);
+            displayTotalViews(KEEN_VIDEO_ID);
         };
         scriptKeen.type = "text/javascript";
         scriptKeen.src = "https://d26b395fwzu5fz.cloudfront.net/3.2.4/keen.min.js";
@@ -421,20 +432,20 @@
 
     function checkVideoKeenForCookies() {
         console.log("Check Video for Cookies");
-        guidCookie = getCookie(_keenVideoID);
+        GRID_COOKIE = getCookie(KEEN_VIDEO_ID);
 
-        if (guidCookie) {
-            console.log("(Check Video For Cookies) This Video already has a GUID cookie: " + guidCookie);
+        if (GRID_COOKIE) {
+            console.log("(Check Video For Cookies) This Video already has a GUID cookie: " + GRID_COOKIE);
 
-            var cookieArray = guidCookie.split(",");
+            var cookieArray = GRID_COOKIE.split(",");
             console.log(cookieArray);
 
             // set the uniqueID to the existing one in the cookie:
-            _uniqueID = cookieArray[0];
-            console.log("Existing User ID Found: " + _uniqueID);
-            _keenUserName = _uniqueID.substr(0, 23);
+            UNIQUE_ID = cookieArray[0];
+            console.log("Existing User ID Found: " + UNIQUE_ID);
+            KEEN_USER_NAME = UNIQUE_ID.substr(0, 23);
 
-            if (cookieArray.indexOf(_keenVideoID) !== -1) {
+            if (cookieArray.indexOf(KEEN_VIDEO_ID) !== -1) {
                 console.log("This is the Video recorded in the cookie!");
                 console.log(cookieArray[2]);
                 if (cookieArray[2] == "5") {
@@ -472,7 +483,7 @@
         });
 
         // Send query
-        _keenClient.run(totalViewsQuery, function (err, res) {
+        KEEN_CLIENT.run(totalViewsQuery, function (err, res) {
 
             var playsTotal = '0';
             if (err) {
@@ -498,7 +509,7 @@
             filters: [{
                 "property_name": "userRating",
                 "operator": "eq",
-                "property_value": _like
+                "property_value": LIKE_RATING
             }, {"property_name": "videoID", "operator": "eq", "property_value": videoID}]
         });
 
@@ -507,12 +518,12 @@
             filters: [{
                 "property_name": "userRating",
                 "operator": "eq",
-                "property_value": _dislike
+                "property_value": DISLIKE_RATING
             }, {"property_name": "videoID", "operator": "eq", "property_value": videoID}]
         });
 
         // Send query
-        _keenClient.run([likeQuery, dislikeQuery], function (err, res) {
+        KEEN_CLIENT.run([likeQuery, dislikeQuery], function (err, res) {
             if (err) {
                 // there was an error!
                 console.log(err);
@@ -530,6 +541,8 @@
             }
         });
     }
+
+
 
 
     /* Perni Close*/
