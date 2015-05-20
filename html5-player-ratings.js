@@ -350,8 +350,12 @@
     /**--------------------------------------------------------- SET/GET COOKIES **/
     function setCookie(c_name, value, exdays) {
         var exdate = new Date();
+
+        var now = new Date();
+        now.setMonth( now.getMonth() + 1 );
+
         exdate.setDate(exdate.getDate() + exdays);
-        var c_value = escape(value) + ((exdays === null) ? "" : "; expires=" + exdate.toUTCString());
+        var c_value = escape(value) + ((exdays === null) ? "; expires=" + now.toUTCString() : "; expires=" + exdate.toUTCString());
         document.cookie = c_name + "=" + c_value;
     }
 
