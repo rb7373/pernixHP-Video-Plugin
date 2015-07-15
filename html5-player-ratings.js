@@ -549,7 +549,7 @@
     }
 
 
-    function console.log(msg) {
+    function debug(msg) {
         return;
         //return console.log(msg);
     }
