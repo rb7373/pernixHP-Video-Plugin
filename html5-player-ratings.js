@@ -3,8 +3,9 @@
 
     var VIDEO_ID;
     var GRID_COOKIE;
-    var UNIQUE_ID;
+    var EXPIRE_DAYS = 365;
 
+    var UNIQUE_ID;
     var VIDEO_TAG;
 
     // Button Images
@@ -25,10 +26,12 @@
     var KEEN_CLIENT;
     var KEEN_VIDEO_ID;
     var KEEN_USER_NAME;
+    var KEEN_USER_NAME_LENGTH = 23;
     var LIKE_RATING = 5;
     var DISLIKE_RATING = 1;
     var CURRENT_LIKES_COUNT;
     var CURRENT_DISLIKES_COUNT;
+    var CURRENT_PLAYS_TOTAL;
 
     var SUMMIT_EVENT_RATING = 'userVideoRating';
     var SUMMIT_EVENT_VIEW = 'userVideoView';
@@ -55,9 +58,9 @@
         experienceModule.addEventListener(brightcove.api.events.ExperienceEvent.TEMPLATE_READY, initialize);
     }
 
-    function setupKEEN_CLIENT() {
+    function setupKeenClient() {
 
-        console.log('setup keenClient');
+        debug('setup keenClient');
 
         KEEN_CLIENT = new Keen({
             projectId: PROJECT_ID,   // String (required always)
@@ -72,19 +75,18 @@
 
     //listening for events
     function initialize(evt) {
-        console.log("***INITIALIZE API***");
-
-
+        debug("***INITIALIZE API***");
+        
         // embed Keen.io to iframe DOM
-        loadKeenIOScrip();
+        loadKeenIOScript();
 
         // --------- APPEND TAG THAT HOLDS CUSTOM ELEMENTS
         VIDEO_TAG = document.getElementById('bcVideo');
         var offsets = getOffsets(VIDEO_TAG);
         var playerHeight = window.innerHeight;
-        console.log("Player Height: " + playerHeight);
+        debug("Player Height: " + playerHeight);
         var playerWidth = window.innerWidth;
-        console.log("Player Width: " + playerWidth);
+        debug("Player Width: " + playerWidth);
 
         $(document.body).append('<div id="custom-elements"></div>');
         $('#custom-elements').css({
@@ -112,7 +114,7 @@
         KEEN_VIDEO_ID = 'keeid-' + VIDEO_ID;
 
         // get existing cookies on Player Load
-        console.log("Player Load First Video ID: " + KEEN_VIDEO_ID);
+        debug("Player Load First Video ID: " + KEEN_VIDEO_ID);
 
         // check first video for cookies
         checkVideoKeenForCookies(KEEN_VIDEO_ID);
@@ -122,39 +124,39 @@
     /**--------------------------------------------------------- URL REQUEST FUNCTIONS **/
 
     $(document).ready(function () {
-        console.log("Jquery");
-        console.log(uniqueid());
+        debug("Jquery");
+        debug(getUniqueID());
     });
 
     /**--------------------------------------------------------- EVENT HANDLERS **/
 
     function onMediaChange() {
-        console.log("Media Change");
+        debug("Media Change");
         resetButtonIcons();
-        videoPlayerModule.getCurrentVideo(changeVidCallback);
+        videoPlayerModule.getCurrentVideo(onChangeVideo);
     }
 
     function onMediaComplete() {
-        console.log('COMPLETE VIDEO');
+        debug('COMPLETE VIDEO');
 
         KEEN_CLIENT.addEvent(SUMMIT_EVENT_VIEW, constructSubmitKeenFinishedVideo(KEEN_VIDEO_ID), function (err, res) {
             if (err) {
                 // there was an error!
-                console.log('Keen.io summit complete error: ', err);
+                debug('Keen.io summit complete error: ', err);
             }
             else {
-                console.log('Keen.io successful complete summit: ', res);
-                displayTotalViews(KEEN_VIDEO_ID);
+                debug('Keen.io successful complete summit: ', res);
+                updateTotalViews(++CURRENT_PLAYS_TOTAL);
             }
         });
 
     }
 
-    function changeVidCallback(result) {
+    function onChangeVideo(result) {
 
         VIDEO_ID = result.id;
         KEEN_VIDEO_ID = 'keeid-' + VIDEO_ID;
-        console.log("Media Change: " + KEEN_VIDEO_ID);
+        debug("Media Change: " + KEEN_VIDEO_ID);
 
         countRatingByVideoIDAndDraw(KEEN_VIDEO_ID);
         displayTotalViews(KEEN_VIDEO_ID);
@@ -164,57 +166,56 @@
     function onThumbsUpClick() {
         // if unique ID is not set for this user yet...i.e., it's their first rating
         if (!UNIQUE_ID) {
-            UNIQUE_ID = uniqueid();
-            KEEN_USER_NAME = UNIQUE_ID.substr(0, 23);
+            UNIQUE_ID = getUniqueID();
+            KEEN_USER_NAME = UNIQUE_ID.substr(0, KEEN_USER_NAME_LENGTH);
         }
 
         if (!GRID_COOKIE) {
             disableButtons();
-            setCookie(KEEN_VIDEO_ID, UNIQUE_ID + "," + KEEN_VIDEO_ID + ",5");
+            setCookie(KEEN_VIDEO_ID, UNIQUE_ID + "," + KEEN_VIDEO_ID + "," + LIKE_RATING);
             enableThumbsUpIcon();
 
-            console.log('----------Update Bar Graph---------------');
+            debug('----------Update Bar Graph---------------');
             drawBarGraphLikesDislikes(++CURRENT_LIKES_COUNT, CURRENT_DISLIKES_COUNT);
 
             // submit rating
             submitKeenRating(LIKE_RATING);
 
-
         } else {
-            console.log("You already have a GUID: " + GRID_COOKIE);
+            debug("You already have a GUID: " + GRID_COOKIE);
         }
     }
 
     function onThumbsDownClick() {
         // if unique ID is not set for this user yet...i.e., it's their first rating
         if (!UNIQUE_ID) {
-            UNIQUE_ID = uniqueid();
-            KEEN_USER_NAME = UNIQUE_ID.substr(0, 23);
+            UNIQUE_ID = getUniqueID();
+            KEEN_USER_NAME = UNIQUE_ID.substr(0, KEEN_USER_NAME_LENGTH);
         }
 
         if (!GRID_COOKIE) {
             disableButtons();
-            setCookie(KEEN_VIDEO_ID, UNIQUE_ID + "," + KEEN_VIDEO_ID + ",1");
+            setCookie(KEEN_VIDEO_ID, UNIQUE_ID + "," + KEEN_VIDEO_ID + "," + DISLIKE_RATING);
             enableThumbsDownIcon();
 
-            console.log('----------Update Bar Graph---------------');
+            debug('----------Update Bar Graph---------------');
             drawBarGraphLikesDislikes(CURRENT_LIKES_COUNT, ++CURRENT_DISLIKES_COUNT);
 
             // submit rating
             submitKeenRating(DISLIKE_RATING);
 
         } else {
-            console.log("You already have a GUID: " + GRID_COOKIE);
+            debug("You already have a GUID: " + GRID_COOKIE);
         }
     }
 
     function enableThumbsUpIcon() {
-        console.log($('#thumbs-up'));
+        debug($('#thumbs-up'));
         $('#thumbs-up').children('img').attr('src', THUMBS_UP_IMG_ON);
     }
 
     function enableThumbsDownIcon() {
-        console.log($('#thumbs-down'));
+        debug($('#thumbs-down'));
         $('#thumbs-down').children('img').attr('src', THUMBS_DOWN_IMG_ON);
     }
 
@@ -230,8 +231,6 @@
         $('#thumbs-up, #thumbs-down').css({'cursor': 'pointer'});
     }
 
-    /**--------------------------------------------------------- UI ELEMENTS **/
-
     function displayUIButtons() {
         $('#custom-elements').append('<div class="ratings"><div id="thumbs-up"><img src="' + THUMBS_UP_IMG + '" /></div><div id="thumbs-down"><img src="' + THUMBS_DOWN_IMG + '" /></div></div>');
         $('.ratings').css('width', '125px');
@@ -242,7 +241,7 @@
             'margin-right': '10px',
             'cursor': 'pointer'
         });
-        console.log("display UI Buttons");
+        debug("display UI Buttons");
     }
 
     function drawBarGraphLikesDislikes(likes, dislikes) {
@@ -257,7 +256,7 @@
         var totalVotes = likes + dislikes;
         var likesPercent = totalVotes ? likes / totalVotes : 0;
 
-        console.log("Percentage of Likes: " + likesPercent + "%");
+        debug("Percentage of Likes: " + likesPercent + "%");
 
         // to get width, multiply width of bar against percent
         var likeBarWidth = 178 * likesPercent;
@@ -272,7 +271,7 @@
         contextBG.fillStyle = "#bbbbbb";
         contextBG.fill();
 
-        console.log(canvasBG);
+        debug(canvasBG);
 
         $('#video-ratings').append('<canvas id="canvasLikes" width="178" height="8" style="position:absolute;top:0px;left:0;"></canvas>');
 
@@ -285,7 +284,7 @@
         likeContext.fillStyle = "#0990d2";
         likeContext.fill();
 
-        console.log(likeCanvas);
+        debug(likeCanvas);
 
         // print likes and dislikes
         $('#video-ratings').append('<p id="total-likes"></p>');
@@ -304,14 +303,13 @@
 
         totalLikesDiv.innerHTML = (likes == 1) ? likes + " Like" : likes + " Likes";
         totalDislikesDiv.innerHTML = (dislikes == 1) ? dislikes + " Dislike" : dislikes + " Dislikes";
-        console.log($('#video-ratings'));
+        debug($('#video-ratings'));
     }
 
 
     function displayTotalViews(videoID) {
 
-
-        console.log('--------------------displayTotalViews-----------------------');
+        debug('--------------------displayTotalViews-----------------------');
 
         // remove any existing views tags
         $('#total-video-views').remove();
@@ -323,17 +321,26 @@
 
     }
 
+    function updateTotalViews(playsTotal) {
+
+        debug('VISTAS: ' + playsTotal);
+
+        playsTotal += ' Views';
+        $('#total-video-views').text(playsTotal);
+
+    }
+
 
     function submitKeenRating(rating) {
-        console.log('submitKeenRating');
+        debug('submitKeenRating');
 
         KEEN_CLIENT.addEvent(SUMMIT_EVENT_RATING, constructSubmitKeenRating(KEEN_VIDEO_ID, rating), function (err, res) {
             if (err) {
                 // there was an error!
-                console.log('Keen.io summit error: ', err);
+                debug('Keen.io summit error: ', err);
             }
             else {
-                console.log('Keen.io successful summit: ', res);
+                debug('Keen.io successful summit: ', res);
             }
         });
     }
@@ -341,6 +348,7 @@
     /**--------------------------------------------------------- SET/GET COOKIES **/
     function setCookie(c_name, value, exdays) {
         var exdate = new Date();
+        exdays = exdays ? exdays : EXPIRE_DAYS;
         exdate.setDate(exdate.getDate() + exdays);
         var c_value = escape(value) + ((exdays === null) ? "" : "; expires=" + exdate.toUTCString());
         document.cookie = c_name + "=" + c_value;
@@ -374,7 +382,7 @@
     }
 
     /**----------------------------UNIQUE ID **/
-    function uniqueid() {
+    function getUniqueID() {
         // always start with a letter (for DOM friendlyness)
         var idstr = String.fromCharCode(Math.floor((Math.random() * 25) + 65));
         do {
@@ -389,13 +397,12 @@
         return (idstr);
     }
 
-    /* Pernix Open*/
 
-    function loadKeenIOScrip() {
+    function loadKeenIOScript() {
         var scriptKeen = document.createElement('script');
         scriptKeen.onload = function () {
-            setupKEEN_CLIENT();
-            console.log('***HERE GET likes');
+            setupKeenClient();
+            debug('***HERE GET likes');
             countRatingByVideoIDAndDraw(KEEN_VIDEO_ID);
             displayTotalViews(KEEN_VIDEO_ID);
         };
@@ -431,33 +438,33 @@
     }
 
     function checkVideoKeenForCookies() {
-        console.log("Check Video for Cookies");
+        debug("Check Video for Cookies");
         GRID_COOKIE = getCookie(KEEN_VIDEO_ID);
 
         if (GRID_COOKIE) {
-            console.log("(Check Video For Cookies) This Video already has a GUID cookie: " + GRID_COOKIE);
+            debug("(Check Video For Cookies) This Video already has a GUID cookie: " + GRID_COOKIE);
 
             var cookieArray = GRID_COOKIE.split(",");
-            console.log(cookieArray);
+            debug(cookieArray);
 
-            // set the uniqueID to the existing one in the cookie:
+            // set the getUniqueID to the existing one in the cookie:
             UNIQUE_ID = cookieArray[0];
-            console.log("Existing User ID Found: " + UNIQUE_ID);
-            KEEN_USER_NAME = UNIQUE_ID.substr(0, 23);
+            debug("Existing User ID Found: " + UNIQUE_ID);
+            KEEN_USER_NAME = UNIQUE_ID.substr(0, KEEN_USER_NAME_LENGTH);
 
             if (cookieArray.indexOf(KEEN_VIDEO_ID) !== -1) {
-                console.log("This is the Video recorded in the cookie!");
-                console.log(cookieArray[2]);
-                if (cookieArray[2] == "5") {
-                    console.log("This Video was rated a Thumbs Up!");
+                debug("This is the Video recorded in the cookie!");
+                debug(cookieArray[2]);
+                if (cookieArray[2] == LIKE_RATING) {
+                    debug("This Video was rated a Thumbs Up!");
                     $('#thumbs-up').ready(function () {
-                        console.log("Thumbs Up is ready.");
+                        debug("Thumbs Up is ready.");
                     });
                     enableThumbsUpIcon();
-                } else if (cookieArray[2] == "1") {
-                    console.log("This Video was rated a Thumbs Down...");
+                } else if (cookieArray[2] == DISLIKE_RATING) {
+                    debug("This Video was rated a Thumbs Down...");
                     $('#thumbs-down').ready(function () {
-                        console.log("Thumbs Down is ready.");
+                        debug("Thumbs Down is ready.");
                         enableThumbsDownIcon();
                     });
                 }
@@ -467,11 +474,11 @@
             disableButtons();
 
         } else {
-            console.log("This Video doesn't have any existing cookies on this browser, attach click events");
+            debug("This Video doesn't have any existing cookies on this browser, attach click events");
             // attach click handlers
             $('#thumbs-up').bind("click", onThumbsUpClick);
             $('#thumbs-down').bind("click", onThumbsDownClick);
-            console.log("Click listeners bound");
+            debug("Click listeners bound");
         }
     }
 
@@ -485,17 +492,16 @@
         // Send query
         KEEN_CLIENT.run(totalViewsQuery, function (err, res) {
 
-            var playsTotal = '0';
+            var playsTotal = 0;
             if (err) {
                 // there was an error!
-                console.log(err);
+                debug(err);
             }
             else {
-                // do something with res.result
-                console.log('Resultados de consulta');
-                console.log(res);
-                playsTotal = res.result ? res.result : '0';
-                console.log('VISTAS: ' + playsTotal);
+                debug(res);
+                playsTotal = res.result ? res.result : 0;
+                CURRENT_PLAYS_TOTAL = playsTotal;
+                debug('VISTAS: ' + playsTotal);
             }
             playsTotal += ' Views';
             $('#total-video-views').text(playsTotal);
@@ -526,12 +532,11 @@
         KEEN_CLIENT.run([likeQuery, dislikeQuery], function (err, res) {
             if (err) {
                 // there was an error!
-                console.log(err);
+                debug(err);
             }
             else {
-                // do something with res.result
-                console.log('Resultados de consulta');
-                console.log(res);
+
+                debug(res);
 
                 var likes = res[0].result;
                 var dislikes = res[1].result;
@@ -543,9 +548,12 @@
     }
 
 
-
+    function debug(msg) {
+        return;
+        //return console.log(msg);
+    }
 
     /* Perni Close*/
-    // update! 16
+    // update! 22
 
 }());
