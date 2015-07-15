@@ -221,6 +221,7 @@
 
     function disableButtons() {
         console.log('apply disableButtons!');
+        console.log(GRID_COOKIE);
         $('#thumbs-up').off("click");
         $('#thumbs-down').off("click");
         $('#thumbs-up, #thumbs-down').css({'cursor': 'auto'});
@@ -477,8 +478,8 @@
         } else {
             console.log("This Video doesn't have any existing cookies on this browser, attach click events");
             // attach click handlers
-            $('#thumbs-up').bind("click", onThumbsUpClick);
-            $('#thumbs-down').bind("click", onThumbsDownClick);
+            $('#thumbs-up').on("click", onThumbsUpClick);
+            $('#thumbs-down').on("click", onThumbsDownClick);
             console.log("Click listeners bound");
         }
     }
