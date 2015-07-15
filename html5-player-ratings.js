@@ -180,6 +180,9 @@
 
             // submit rating
             submitKeenRating(LIKE_RATING);
+            
+            // validate correct cookies
+            checkVideoKeenForCookies();
 
         } else {
             console.log("You already have a GUID: " + GRID_COOKIE);
@@ -203,6 +206,9 @@
 
             // submit rating
             submitKeenRating(DISLIKE_RATING);
+
+            // validate correct cookies
+            checkVideoKeenForCookies();
 
         } else {
             console.log("You already have a GUID: " + GRID_COOKIE);
