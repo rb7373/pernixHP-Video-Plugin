@@ -549,8 +549,8 @@
 
 
     function debug(msg) {
-        return;
-        //return console.log(msg);
+        //return;
+        return console.log(msg);
     }
 
     /* Perni Close*/
