@@ -1,0 +1,127 @@
+<!-- saved from url=(0014)about:internet -->
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8"/>
+<title>ThumbsUp.as</title>
+<link rel="stylesheet" type="text/css" href="../../../../SourceStyles.css"/>
+</head>
+
+<body><pre><span class="ActionScriptpackage">package</span> <span class="ActionScriptDefault_Text">com</span><span class="ActionScriptOperator">.</span><span class="ActionScriptDefault_Text">hp</span><span class="ActionScriptOperator">.</span><span class="ActionScriptDefault_Text">ratings</span>
+<span class="ActionScriptBracket/Brace">{</span>
+    <span class="ActionScriptReserved">import</span> <span class="ActionScriptDefault_Text">flash</span><span class="ActionScriptOperator">.</span><span class="ActionScriptDefault_Text">display</span><span class="ActionScriptOperator">.</span><span class="ActionScriptDefault_Text">Bitmap</span>;
+    <span class="ActionScriptReserved">import</span> <span class="ActionScriptDefault_Text">flash</span><span class="ActionScriptOperator">.</span><span class="ActionScriptDefault_Text">display</span><span class="ActionScriptOperator">.</span><span class="ActionScriptDefault_Text">DisplayObject</span>;
+    <span class="ActionScriptReserved">import</span> <span class="ActionScriptDefault_Text">flash</span><span class="ActionScriptOperator">.</span><span class="ActionScriptDefault_Text">display</span><span class="ActionScriptOperator">.</span><span class="ActionScriptDefault_Text">Shape</span>;
+    <span class="ActionScriptReserved">import</span> <span class="ActionScriptDefault_Text">flash</span><span class="ActionScriptOperator">.</span><span class="ActionScriptDefault_Text">display</span><span class="ActionScriptOperator">.</span><span class="ActionScriptDefault_Text">Sprite</span>;
+    <span class="ActionScriptReserved">import</span> <span class="ActionScriptDefault_Text">flash</span><span class="ActionScriptOperator">.</span><span class="ActionScriptDefault_Text">events</span><span class="ActionScriptOperator">.</span><span class="ActionScriptDefault_Text">MouseEvent</span>;
+
+    <span class="ActionScriptReserved">public</span> <span class="ActionScriptclass">class</span> <span class="ActionScriptDefault_Text">ThumbsUp</span> <span class="ActionScriptReserved">extends</span> <span class="ActionScriptDefault_Text">Sprite</span>
+    <span class="ActionScriptBracket/Brace">{</span>
+        <span class="ActionScriptReserved">private</span> <span class="ActionScriptvar">var</span> <span class="ActionScriptDefault_Text">_button</span>:<span class="ActionScriptDefault_Text">Sprite</span> <span class="ActionScriptOperator">=</span> <span class="ActionScriptReserved">new</span> <span class="ActionScriptDefault_Text">Sprite</span><span class="ActionScriptBracket/Brace">(</span><span class="ActionScriptBracket/Brace">)</span>;
+        
+        <span class="ActionScriptBracket/Brace">[</span><span class="ActionScriptMetadata">Embed</span><span class="ActionScriptBracket/Brace"> </span>=<span class="ActionScriptString">"/thumbs-up-off.png"</span> <span class="ActionScriptBracket/Brace">)</span><span class="ActionScriptBracket/Brace">]</span>
+        <span class="ActionScriptReserved">public</span> <span class="ActionScriptReserved">static</span> <span class="ActionScriptReserved">const</span> <span class="ActionScriptDefault_Text">THUMBS_UP_OFF</span>:<span class="ActionScriptDefault_Text">Class</span>;
+        
+        <span class="ActionScriptBracket/Brace">[</span><span class="ActionScriptMetadata">Embed</span><span class="ActionScriptBracket/Brace"> </span>=<span class="ActionScriptString">"/thumbs-up-on.png"</span> <span class="ActionScriptBracket/Brace">)</span><span class="ActionScriptBracket/Brace">]</span>
+        <span class="ActionScriptReserved">public</span> <span class="ActionScriptReserved">static</span> <span class="ActionScriptReserved">const</span> <span class="ActionScriptDefault_Text">THUMBS_UP_ON</span>:<span class="ActionScriptDefault_Text">Class</span>;
+        
+        <span class="ActionScriptBracket/Brace">[</span><span class="ActionScriptMetadata">Embed</span><span class="ActionScriptBracket/Brace"> </span>=<span class="ActionScriptString">"/thumbs-up-hover.png"</span> <span class="ActionScriptBracket/Brace">)</span><span class="ActionScriptBracket/Brace">]</span>
+        <span class="ActionScriptReserved">public</span> <span class="ActionScriptReserved">static</span> <span class="ActionScriptReserved">const</span> <span class="ActionScriptDefault_Text">THUMBS_UP_HOVER</span>:<span class="ActionScriptDefault_Text">Class</span>;
+        
+        <span class="ActionScriptReserved">public</span> <span class="ActionScriptfunction">function</span> <span class="ActionScriptDefault_Text">ThumbsUp</span><span class="ActionScriptBracket/Brace">(</span><span class="ActionScriptBracket/Brace">)</span>
+        <span class="ActionScriptBracket/Brace">{</span>
+            <span class="ActionScriptDefault_Text">addDisplayItems</span><span class="ActionScriptBracket/Brace">(</span><span class="ActionScriptBracket/Brace">)</span>;
+            <span class="ActionScriptComment">//setUpEventListeners();
+</span>        <span class="ActionScriptBracket/Brace">}</span>
+        
+        <span class="ActionScriptReserved">private</span> <span class="ActionScriptfunction">function</span> <span class="ActionScriptDefault_Text">addDisplayItems</span><span class="ActionScriptBracket/Brace">(</span><span class="ActionScriptBracket/Brace">)</span>:<span class="ActionScriptReserved">void</span>
+        <span class="ActionScriptBracket/Brace">{</span>
+            <span class="ActionScriptDefault_Text">_button</span><span class="ActionScriptOperator">.</span><span class="ActionScriptDefault_Text">name</span> <span class="ActionScriptOperator">=</span> <span class="ActionScriptString">'button'</span>;
+            <span class="ActionScriptDefault_Text">_button</span><span class="ActionScriptOperator">.</span><span class="ActionScriptDefault_Text">buttonMode</span> <span class="ActionScriptOperator">=</span> <span class="ActionScriptReserved">true</span>;
+            
+            <span class="ActionScriptComment">// create icons and add to button
+</span>            <span class="ActionScriptvar">var</span> <span class="ActionScriptDefault_Text">thumbsUpOff</span>:<span class="ActionScriptDefault_Text">Bitmap</span> <span class="ActionScriptOperator">=</span> <span class="ActionScriptReserved">new</span> <span class="ActionScriptDefault_Text">THUMBS_UP_OFF</span><span class="ActionScriptBracket/Brace">(</span><span class="ActionScriptBracket/Brace">)</span>;
+            <span class="ActionScriptDefault_Text">thumbsUpOff</span><span class="ActionScriptOperator">.</span><span class="ActionScriptDefault_Text">name</span> <span class="ActionScriptOperator">=</span> <span class="ActionScriptString">'thumbsUpOff'</span>;
+            <span class="ActionScriptDefault_Text">thumbsUpOff</span><span class="ActionScriptOperator">.</span><span class="ActionScriptDefault_Text">alpha</span> <span class="ActionScriptOperator">=</span> 1;
+            <span class="ActionScriptDefault_Text">thumbsUpOff</span><span class="ActionScriptOperator">.</span><span class="ActionScriptDefault_Text">width</span> <span class="ActionScriptOperator">=</span> 51;
+            <span class="ActionScriptDefault_Text">thumbsUpOff</span><span class="ActionScriptOperator">.</span><span class="ActionScriptDefault_Text">height</span> <span class="ActionScriptOperator">=</span> 36;
+            
+            <span class="ActionScriptvar">var</span> <span class="ActionScriptDefault_Text">thumbsUpHover</span>:<span class="ActionScriptDefault_Text">Bitmap</span> <span class="ActionScriptOperator">=</span> <span class="ActionScriptReserved">new</span> <span class="ActionScriptDefault_Text">THUMBS_UP_HOVER</span><span class="ActionScriptBracket/Brace">(</span><span class="ActionScriptBracket/Brace">)</span>;
+            <span class="ActionScriptDefault_Text">thumbsUpHover</span><span class="ActionScriptOperator">.</span><span class="ActionScriptDefault_Text">name</span> <span class="ActionScriptOperator">=</span> <span class="ActionScriptString">'thumbsUpHover'</span>;
+            <span class="ActionScriptDefault_Text">thumbsUpHover</span><span class="ActionScriptOperator">.</span><span class="ActionScriptDefault_Text">alpha</span> <span class="ActionScriptOperator">=</span> 0;
+            <span class="ActionScriptDefault_Text">thumbsUpHover</span><span class="ActionScriptOperator">.</span><span class="ActionScriptDefault_Text">width</span> <span class="ActionScriptOperator">=</span> 51;
+            <span class="ActionScriptDefault_Text">thumbsUpHover</span><span class="ActionScriptOperator">.</span><span class="ActionScriptDefault_Text">height</span> <span class="ActionScriptOperator">=</span> 36;
+            
+            <span class="ActionScriptvar">var</span> <span class="ActionScriptDefault_Text">thumbsUpOn</span>:<span class="ActionScriptDefault_Text">Bitmap</span> <span class="ActionScriptOperator">=</span> <span class="ActionScriptReserved">new</span> <span class="ActionScriptDefault_Text">THUMBS_UP_ON</span><span class="ActionScriptBracket/Brace">(</span><span class="ActionScriptBracket/Brace">)</span>;
+            <span class="ActionScriptDefault_Text">thumbsUpOn</span><span class="ActionScriptOperator">.</span><span class="ActionScriptDefault_Text">name</span> <span class="ActionScriptOperator">=</span> <span class="ActionScriptString">'thumbsUpOn'</span>;
+            <span class="ActionScriptDefault_Text">thumbsUpOn</span><span class="ActionScriptOperator">.</span><span class="ActionScriptDefault_Text">alpha</span> <span class="ActionScriptOperator">=</span> 0;
+            <span class="ActionScriptDefault_Text">thumbsUpOn</span><span class="ActionScriptOperator">.</span><span class="ActionScriptDefault_Text">width</span> <span class="ActionScriptOperator">=</span> 51;
+            <span class="ActionScriptDefault_Text">thumbsUpOn</span><span class="ActionScriptOperator">.</span><span class="ActionScriptDefault_Text">height</span> <span class="ActionScriptOperator">=</span> 36;
+            
+            <span class="ActionScriptComment">// add bitmap images too button in order they would appear
+</span>            <span class="ActionScriptDefault_Text">_button</span><span class="ActionScriptOperator">.</span><span class="ActionScriptDefault_Text">addChild</span><span class="ActionScriptBracket/Brace">(</span><span class="ActionScriptDefault_Text">thumbsUpOff</span><span class="ActionScriptBracket/Brace">)</span>;
+            <span class="ActionScriptDefault_Text">_button</span><span class="ActionScriptOperator">.</span><span class="ActionScriptDefault_Text">addChild</span><span class="ActionScriptBracket/Brace">(</span><span class="ActionScriptDefault_Text">thumbsUpHover</span><span class="ActionScriptBracket/Brace">)</span>;
+            <span class="ActionScriptDefault_Text">_button</span><span class="ActionScriptOperator">.</span><span class="ActionScriptDefault_Text">addChild</span><span class="ActionScriptBracket/Brace">(</span><span class="ActionScriptDefault_Text">thumbsUpOn</span><span class="ActionScriptBracket/Brace">)</span>;
+            
+            <span class="ActionScriptDefault_Text">addChild</span><span class="ActionScriptBracket/Brace">(</span><span class="ActionScriptDefault_Text">_button</span><span class="ActionScriptBracket/Brace">)</span>;
+        <span class="ActionScriptBracket/Brace">}</span>
+        
+        <span class="ActionScriptReserved">private</span> <span class="ActionScriptfunction">function</span> <span class="ActionScriptDefault_Text">setUpEventListeners</span><span class="ActionScriptBracket/Brace">(</span><span class="ActionScriptBracket/Brace">)</span>:<span class="ActionScriptReserved">void</span>
+        <span class="ActionScriptBracket/Brace">{</span>
+            <span class="ActionScriptDefault_Text">_button</span><span class="ActionScriptOperator">.</span><span class="ActionScriptDefault_Text">addEventListener</span><span class="ActionScriptBracket/Brace">(</span><span class="ActionScriptDefault_Text">MouseEvent</span><span class="ActionScriptOperator">.</span><span class="ActionScriptDefault_Text">MOUSE_OVER</span><span class="ActionScriptOperator">,</span> <span class="ActionScriptDefault_Text">onIconHover</span><span class="ActionScriptBracket/Brace">)</span>;
+            <span class="ActionScriptDefault_Text">_button</span><span class="ActionScriptOperator">.</span><span class="ActionScriptDefault_Text">addEventListener</span><span class="ActionScriptBracket/Brace">(</span><span class="ActionScriptDefault_Text">MouseEvent</span><span class="ActionScriptOperator">.</span><span class="ActionScriptDefault_Text">MOUSE_OUT</span><span class="ActionScriptOperator">,</span> <span class="ActionScriptDefault_Text">onIconOut</span><span class="ActionScriptBracket/Brace">)</span>;
+        <span class="ActionScriptBracket/Brace">}</span>
+        
+        <span class="ActionScriptReserved">private</span> <span class="ActionScriptfunction">function</span> <span class="ActionScriptDefault_Text">onIconHover</span><span class="ActionScriptBracket/Brace">(</span><span class="ActionScriptDefault_Text">evt</span>:<span class="ActionScriptDefault_Text">MouseEvent</span><span class="ActionScriptBracket/Brace">)</span>:<span class="ActionScriptReserved">void</span>
+        <span class="ActionScriptBracket/Brace">{</span>
+            <span class="ActionScriptvar">var</span> <span class="ActionScriptDefault_Text">hoverIcon</span>:<span class="ActionScriptDefault_Text">Bitmap</span> <span class="ActionScriptOperator">=</span> <span class="ActionScriptDefault_Text">_button</span><span class="ActionScriptOperator">.</span><span class="ActionScriptDefault_Text">getChildByName</span><span class="ActionScriptBracket/Brace">(</span><span class="ActionScriptString">'thumbsUpHover'</span><span class="ActionScriptBracket/Brace">)</span> <span class="ActionScriptReserved">as</span> <span class="ActionScriptDefault_Text">Bitmap</span>;
+            <span class="ActionScriptDefault_Text">hoverIcon</span><span class="ActionScriptOperator">.</span><span class="ActionScriptDefault_Text">alpha</span> <span class="ActionScriptOperator">=</span> 1;
+        <span class="ActionScriptBracket/Brace">}</span>
+        
+        <span class="ActionScriptReserved">private</span> <span class="ActionScriptfunction">function</span> <span class="ActionScriptDefault_Text">onIconOut</span><span class="ActionScriptBracket/Brace">(</span><span class="ActionScriptDefault_Text">evt</span>:<span class="ActionScriptDefault_Text">MouseEvent</span><span class="ActionScriptBracket/Brace">)</span>:<span class="ActionScriptReserved">void</span>
+        <span class="ActionScriptBracket/Brace">{</span>
+            <span class="ActionScriptvar">var</span> <span class="ActionScriptDefault_Text">hoverIcon</span>:<span class="ActionScriptDefault_Text">Bitmap</span> <span class="ActionScriptOperator">=</span> <span class="ActionScriptDefault_Text">_button</span><span class="ActionScriptOperator">.</span><span class="ActionScriptDefault_Text">getChildByName</span><span class="ActionScriptBracket/Brace">(</span><span class="ActionScriptString">'thumbsUpHover'</span><span class="ActionScriptBracket/Brace">)</span> <span class="ActionScriptReserved">as</span> <span class="ActionScriptDefault_Text">Bitmap</span>;
+            <span class="ActionScriptDefault_Text">hoverIcon</span><span class="ActionScriptOperator">.</span><span class="ActionScriptDefault_Text">alpha</span> <span class="ActionScriptOperator">=</span> 0;
+        <span class="ActionScriptBracket/Brace">}</span>
+        
+        <span class="ActionScriptReserved">public</span> <span class="ActionScriptfunction">function</span> <span class="ActionScriptDefault_Text">disableButton</span><span class="ActionScriptBracket/Brace">(</span><span class="ActionScriptBracket/Brace">)</span>:<span class="ActionScriptReserved">void</span>
+        <span class="ActionScriptBracket/Brace">{</span>
+            <span class="ActionScriptComment">// remove event listeners
+</span>            <span class="ActionScriptDefault_Text">_button</span><span class="ActionScriptOperator">.</span><span class="ActionScriptDefault_Text">removeEventListener</span><span class="ActionScriptBracket/Brace">(</span><span class="ActionScriptDefault_Text">MouseEvent</span><span class="ActionScriptOperator">.</span><span class="ActionScriptDefault_Text">MOUSE_OVER</span><span class="ActionScriptOperator">,</span> <span class="ActionScriptDefault_Text">onIconHover</span><span class="ActionScriptBracket/Brace">)</span>;
+            <span class="ActionScriptDefault_Text">_button</span><span class="ActionScriptOperator">.</span><span class="ActionScriptDefault_Text">removeEventListener</span><span class="ActionScriptBracket/Brace">(</span><span class="ActionScriptDefault_Text">MouseEvent</span><span class="ActionScriptOperator">.</span><span class="ActionScriptDefault_Text">MOUSE_OUT</span><span class="ActionScriptOperator">,</span> <span class="ActionScriptDefault_Text">onIconOut</span><span class="ActionScriptBracket/Brace">)</span>;
+            
+            <span class="ActionScriptDefault_Text">_button</span><span class="ActionScriptOperator">.</span><span class="ActionScriptDefault_Text">buttonMode</span> <span class="ActionScriptOperator">=</span> <span class="ActionScriptReserved">false</span>;
+        <span class="ActionScriptBracket/Brace">}</span>
+        
+        <span class="ActionScriptReserved">public</span> <span class="ActionScriptfunction">function</span> <span class="ActionScriptDefault_Text">enableButton</span><span class="ActionScriptBracket/Brace">(</span><span class="ActionScriptBracket/Brace">)</span>:<span class="ActionScriptReserved">void</span>
+        <span class="ActionScriptBracket/Brace">{</span>
+            <span class="ActionScriptComment">// re-add event listeners and set buttonMode to true
+</span>            <span class="ActionScriptDefault_Text">_button</span><span class="ActionScriptOperator">.</span><span class="ActionScriptDefault_Text">addEventListener</span><span class="ActionScriptBracket/Brace">(</span><span class="ActionScriptDefault_Text">MouseEvent</span><span class="ActionScriptOperator">.</span><span class="ActionScriptDefault_Text">MOUSE_OVER</span><span class="ActionScriptOperator">,</span> <span class="ActionScriptDefault_Text">onIconHover</span><span class="ActionScriptBracket/Brace">)</span>;
+            <span class="ActionScriptDefault_Text">_button</span><span class="ActionScriptOperator">.</span><span class="ActionScriptDefault_Text">addEventListener</span><span class="ActionScriptBracket/Brace">(</span><span class="ActionScriptDefault_Text">MouseEvent</span><span class="ActionScriptOperator">.</span><span class="ActionScriptDefault_Text">MOUSE_OUT</span><span class="ActionScriptOperator">,</span> <span class="ActionScriptDefault_Text">onIconOut</span><span class="ActionScriptBracket/Brace">)</span>;
+            
+            <span class="ActionScriptDefault_Text">_button</span><span class="ActionScriptOperator">.</span><span class="ActionScriptDefault_Text">buttonMode</span> <span class="ActionScriptOperator">=</span> <span class="ActionScriptReserved">true</span>;
+        <span class="ActionScriptBracket/Brace">}</span>
+        
+        <span class="ActionScriptReserved">public</span> <span class="ActionScriptfunction">function</span> <span class="ActionScriptDefault_Text">highlightThumbsUp</span><span class="ActionScriptBracket/Brace">(</span><span class="ActionScriptBracket/Brace">)</span>:<span class="ActionScriptReserved">void</span>
+        <span class="ActionScriptBracket/Brace">{</span>
+            <span class="ActionScriptvar">var</span> <span class="ActionScriptDefault_Text">onState</span>:<span class="ActionScriptDefault_Text">Bitmap</span> <span class="ActionScriptOperator">=</span> <span class="ActionScriptDefault_Text">_button</span><span class="ActionScriptOperator">.</span><span class="ActionScriptDefault_Text">getChildByName</span><span class="ActionScriptBracket/Brace">(</span><span class="ActionScriptString">'thumbsUpOn'</span><span class="ActionScriptBracket/Brace">)</span> <span class="ActionScriptReserved">as</span> <span class="ActionScriptDefault_Text">Bitmap</span>;
+            <span class="ActionScriptDefault_Text">onState</span><span class="ActionScriptOperator">.</span><span class="ActionScriptDefault_Text">alpha</span> <span class="ActionScriptOperator">=</span> 1;
+            
+            <span class="ActionScriptReserved">if</span><span class="ActionScriptBracket/Brace">(</span> <span class="ActionScriptDefault_Text">_button</span><span class="ActionScriptOperator">.</span><span class="ActionScriptDefault_Text">getChildByName</span><span class="ActionScriptBracket/Brace">(</span><span class="ActionScriptString">'thumbsUpHover'</span><span class="ActionScriptBracket/Brace">)</span> <span class="ActionScriptBracket/Brace">)</span>
+            <span class="ActionScriptBracket/Brace">{</span>
+                <span class="ActionScriptvar">var</span> <span class="ActionScriptDefault_Text">hoverState</span>:<span class="ActionScriptDefault_Text">Bitmap</span> <span class="ActionScriptOperator">=</span> <span class="ActionScriptDefault_Text">_button</span><span class="ActionScriptOperator">.</span><span class="ActionScriptDefault_Text">getChildByName</span><span class="ActionScriptBracket/Brace">(</span><span class="ActionScriptString">'thumbsUpHover'</span><span class="ActionScriptBracket/Brace">)</span> <span class="ActionScriptReserved">as</span> <span class="ActionScriptDefault_Text">Bitmap</span>;
+                <span class="ActionScriptDefault_Text">hoverState</span><span class="ActionScriptOperator">.</span><span class="ActionScriptDefault_Text">alpha</span> <span class="ActionScriptOperator">=</span> 0;
+            <span class="ActionScriptBracket/Brace">}</span>
+        <span class="ActionScriptBracket/Brace">}</span>
+        
+        <span class="ActionScriptReserved">public</span> <span class="ActionScriptfunction">function</span> <span class="ActionScriptDefault_Text">resetButton</span><span class="ActionScriptBracket/Brace">(</span><span class="ActionScriptBracket/Brace">)</span>:<span class="ActionScriptReserved">void</span>
+        <span class="ActionScriptBracket/Brace">{</span>
+            <span class="ActionScriptReserved">if</span><span class="ActionScriptBracket/Brace">(</span> <span class="ActionScriptDefault_Text">_button</span><span class="ActionScriptOperator">.</span><span class="ActionScriptDefault_Text">getChildByName</span><span class="ActionScriptBracket/Brace">(</span><span class="ActionScriptString">'thumbsUpOn'</span><span class="ActionScriptBracket/Brace">)</span> <span class="ActionScriptBracket/Brace">)</span>
+            <span class="ActionScriptBracket/Brace">{</span>
+                <span class="ActionScriptvar">var</span> <span class="ActionScriptDefault_Text">onState</span>:<span class="ActionScriptDefault_Text">Bitmap</span> <span class="ActionScriptOperator">=</span> <span class="ActionScriptDefault_Text">_button</span><span class="ActionScriptOperator">.</span><span class="ActionScriptDefault_Text">getChildByName</span><span class="ActionScriptBracket/Brace">(</span><span class="ActionScriptString">'thumbsUpOn'</span><span class="ActionScriptBracket/Brace">)</span> <span class="ActionScriptReserved">as</span> <span class="ActionScriptDefault_Text">Bitmap</span>;
+                <span class="ActionScriptDefault_Text">onState</span><span class="ActionScriptOperator">.</span><span class="ActionScriptDefault_Text">alpha</span> <span class="ActionScriptOperator">=</span> 0;
+            <span class="ActionScriptBracket/Brace">}</span>
+        <span class="ActionScriptBracket/Brace">}</span>
+    <span class="ActionScriptBracket/Brace">}</span>
+<span class="ActionScriptBracket/Brace">}</span></pre></body>
+</html>

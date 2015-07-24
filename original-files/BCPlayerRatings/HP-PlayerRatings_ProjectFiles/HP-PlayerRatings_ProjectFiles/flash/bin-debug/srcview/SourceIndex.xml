@@ -1,0 +1,57 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<index>
+	<title>Source of BCPlayerRatings</title>
+	<nodes>
+		<node icon="classpathIcon" label="assets" expanded="true">
+			<node label="font">
+				<node label="HPSimplifiedW01-Regular.ttf" url="source/assets/font/HPSimplifiedW01-Regular.ttf"/>
+				<node label="HPSimplifiedW02-Regular.ttf" url="source/assets/font/HPSimplifiedW02-Regular.ttf"/>
+				<node label="HPSimplifiedW04-Regular.ttf" url="source/assets/font/HPSimplifiedW04-Regular.ttf"/>
+				<node label="HPSimplifiedW10-Regular.ttf" url="source/assets/font/HPSimplifiedW10-Regular.ttf"/>
+				<node label="HPSimplifiedW15-Regular.ttf" url="source/assets/font/HPSimplifiedW15-Regular.ttf"/>
+			</node>
+			<node icon="imageIcon" label="thumbs-down-hover.png" url="source/assets/thumbs-down-hover.png.html"/>
+			<node icon="imageIcon" label="thumbs-down-off.png" url="source/assets/thumbs-down-off.png.html"/>
+			<node icon="imageIcon" label="thumbs-down-on.png" url="source/assets/thumbs-down-on.png.html"/>
+			<node icon="imageIcon" label="thumbs-up-hover.png" url="source/assets/thumbs-up-hover.png.html"/>
+			<node icon="imageIcon" label="thumbs-up-off.png" url="source/assets/thumbs-up-off.png.html"/>
+			<node icon="imageIcon" label="thumbs-up-on.png" url="source/assets/thumbs-up-on.png.html"/>
+		</node>
+		<node label="html-template">
+			<node label="history">
+				<node icon="cssIcon" label="history.css" url="source/html-template/history/history.css.html"/>
+				<node label="history.js" url="source/html-template/history/history.js.txt"/>
+				<node icon="htmlIcon" label="historyFrame.html" url="source/html-template/history/historyFrame.html"/>
+			</node>
+			<node icon="htmlIcon" label="index.template.html" url="source/html-template/index.template.html"/>
+			<node icon="swfIcon" label="playerProductInstall.swf" url="source/html-template/playerProductInstall.swf"/>
+			<node label="swfobject.js" url="source/html-template/swfobject.js.txt"/>
+		</node>
+		<node label="lib">
+			<node label="BrightcovePlayerAPI.swc" url="source/lib/BrightcovePlayerAPI.swc"/>
+		</node>
+		<node label="src">
+			<node icon="packageIcon" label="com.adobe.serialization.json" expanded="true">
+				<node icon="actionScriptIcon" label="JSON.as" url="source/com/adobe/serialization/json/JSON.as.html"/>
+				<node icon="actionScriptIcon" label="JSONDecoder.as" url="source/com/adobe/serialization/json/JSONDecoder.as.html"/>
+				<node icon="actionScriptIcon" label="JSONEncoder.as" url="source/com/adobe/serialization/json/JSONEncoder.as.html"/>
+				<node icon="actionScriptIcon" label="JSONParseError.as" url="source/com/adobe/serialization/json/JSONParseError.as.html"/>
+				<node icon="actionScriptIcon" label="JSONToken.as" url="source/com/adobe/serialization/json/JSONToken.as.html"/>
+				<node icon="actionScriptIcon" label="JSONTokenizer.as" url="source/com/adobe/serialization/json/JSONTokenizer.as.html"/>
+				<node icon="actionScriptIcon" label="JSONTokenType.as" url="source/com/adobe/serialization/json/JSONTokenType.as.html"/>
+			</node>
+			<node icon="packageIcon" label="com.hp.ratings" expanded="true">
+				<node icon="actionScriptIcon" label="BarGraph.as" url="source/com/hp/ratings/BarGraph.as.html"/>
+				<node icon="actionScriptIcon" label="GUID.as" url="source/com/hp/ratings/GUID.as.html"/>
+				<node icon="actionScriptIcon" label="ThumbsDown.as" url="source/com/hp/ratings/ThumbsDown.as.html"/>
+				<node icon="actionScriptIcon" label="ThumbsUp.as" url="source/com/hp/ratings/ThumbsUp.as.html"/>
+				<node icon="actionScriptIcon" label="VideoViews.as" url="source/com/hp/ratings/VideoViews.as.html"/>
+			</node>
+			<node icon="mxmlAppIcon" selected="true" label="BCPlayerRatings.as" url="source/BCPlayerRatings.as.html"/>
+		</node>
+	</nodes>
+	<zipfile label="Download source (ZIP, 724K)" url="BCPlayerRatings.zip">
+	</zipfile>
+	<sdklink label="Download Flex SDK" url="http://www.adobe.com/go/flex451_sdk_download">
+	</sdklink>
+</index>

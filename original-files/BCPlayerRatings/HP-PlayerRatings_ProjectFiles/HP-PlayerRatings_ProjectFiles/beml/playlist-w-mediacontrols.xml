@@ -1,0 +1,69 @@
+<Runtime>
+  <Theme name="Deluxe" style="Light">
+    <Style id="default"><![CDATA[.titleText {fontSize: 12;}.bodyText {fontSize: 10;}.linkText {fontSize: 10;}]]></Style>
+  </Theme>
+  <Layout id="application" width="798" height="603" boxType="vbox" padding="6" gutter="4">
+    <HBox height="40" vAlign="bottom" gutter="9">
+      <TitleLabel height="24" width="765" id="videoTitle" text="{videoPlayer.video.displayName}" selected="true" size="18" truncate="true"/>
+      <TabBar id="playlistTabs" height="22" tabAlign="right" hideSingleTab="true"/>
+    </HBox>
+    <HBox height="406" gutter="6">
+      <VBox width="480">
+        <VideoDisplay id="videoPlayer" showBack="true" includeFullscreenControls="true" video="{videoList.selectedItem}"/>
+        <MediaControls id="mediaControls" height="46">
+          <HBox width="460" height="12" x="10" y="5" gutter="21">
+            <Label visible="{adContext.playheadVisible}" width="31" height="11" vAlign="middle" hAlign="right" text="{format(videoPlayer.mediaPosition, SecondsTimecodeFormatter)}"/>
+            <VBox>
+              <Spacer height="1"/>
+              <Playhead visible="{adContext.playheadVisible}" mediaController="{videoPlayer}"/>
+            </VBox>
+            <Label visible="{adContext.playheadVisible}" width="31" height="11" vAlign="middle" text="{format(videoPlayer.mediaDuration, SecondsTimecodeFormatter)}"/>
+          </HBox>
+          <HBox width="465" height="19" x="5" y="25" gutter="10">
+            <ToggleButton visible="{adContext.playPauseVisible}" width="60" showBack="false" iconName="play" toggledIconName="pause" label="controls play" toggledLabel="controls pause" tooltip="controls play tooltip" toggledTooltip="controls pause tooltip" height="19" autoSize="false" lockHeight="true" iconAlignmentH="left" labelAlignmentH="left" labelOffsetX="20" click="{videoPlayer.play()}" toggledClick="{videoPlayer.pause()}" toggled="{videoPlayer.playing}"/>
+            <Spacer/>
+            <Button visible="{adContext.menuOptionsVisible}" showBack="false" iconName="share" label="community share" tooltip="community share tooltip" height="19" autoSize="true" lockHeight="true" iconAlignmentH="left" labelAlignmentH="left" labelOffsetX="21" data="{videoPlayer.video}" click="{videoPlayer.toggleMenuPage('Email', data)}"/>
+            <Button visible="{adContext.menuOptionsVisible}" showBack="false" iconName="link" label="community link" tooltip="community link tooltip" height="19" autoSize="true" lockHeight="true" iconAlignmentH="left" labelAlignmentH="left" labelOffsetX="21" data="{videoPlayer.video}" click="{videoPlayer.toggleMenuPage('Link', data)}"/>
+            <Button visible="{adContext.menuOptionsVisible}" showBack="false" iconName="code" label="community code" tooltip="community code tooltip" height="19" autoSize="true" lockHeight="true" iconAlignmentH="left" labelAlignmentH="left" labelOffsetX="21" data="{videoPlayer.video}" click="{videoPlayer.toggleMenuPage('Embed', data)}"/>
+            <Spacer/>
+            <Button visible="{adContext.maximizeVisible}" showBack="false" iconName="maximize" tooltip="controls maximize tooltip" width="19" height="17" click="{videoPlayer.goFullScreen()}"/>
+            <Button visible="{adContext.volumeVisible}" showBack="false" iconName="volume" tooltip="controls volume tooltip" width="19" height="17" click="{videoPlayer.toggleVolumeControls()}"/>
+            <Button visible="{adContext.menuVisible}" showBack="false" iconName="menu" label="controls menu" height="19" autoSize="true" lockHeight="true" iconAlignmentH="left" labelAlignmentH="left" labelOffsetX="19" data="{videoPlayer.video}" click="{videoPlayer.toggleMenuPage('Info', data)}"/>
+          </HBox>
+          <Label visible="{adContext.sponsorMessageVisible}" x="9" y="5" text="sponsor message"/>
+          <Label visible="{adContext.timePositionVisible}" x="439" y="5" width="31" height="11" vAlign="middle" hAlign="right" text="{format(videoPlayer.positiveTimeRemaining, SecondsTimecodeFormatter)}"/>
+        </MediaControls>
+      </VBox>
+      <List id="videoList" rowHeight="78" automaticAdvance="true" data="{playlistTabs.selectedItem.videoDTOs}" selectOnClick="true" itemInsetV="4" itemLeading="2">
+        <ListItem boxType="hbox">
+          <Spacer width="8"/>
+          <VBox width="80" height="74" vAlign="middle">
+            <ThumbnailButton height="60" data="{currentItem}" source="{currentItem.thumbnailURL}"/>
+          </VBox>
+          <Spacer width="7"/>
+          <VBox>
+            <Spacer height="3"/>
+            <TitleLabel height="18" text="{currentItem.displayName}" truncate="true"/>
+            <Label height="52" multiline="true" text="{currentItem.shortDescription}" truncate="true"/>
+          </VBox>
+          <Spacer width="3"/>
+        </ListItem>
+      </List>
+    </HBox>
+    <VBox gutter="15">
+      <HBox height="32">
+        <Spacer width="6"/>
+        <VBox>
+          <!-- Ratings here -->
+          <SWFLoader id="playerRatings" source="***INSERT-PATH-TO-BCPlayerRatings.swf***"/>
+        </VBox>
+      </HBox>
+      <HBox width="757" hAlign="right">
+        <Canvas width="728">
+          <Image id="bottomImage" width="728" height="90" scaleMode="scaleDown"/>
+          <ExpandingBanner id="banner" expandedHeight="405" width="728" height="90" expandedWidth="299" buttonWidth="90" expandedOffsetY="-52" expandedOffsetX="458" disableOnExpand="playlistTabs,videoList" bannerFormats="2,6,20"/>
+        </Canvas>
+      </HBox>
+    </VBox>
+  </Layout>
+</Runtime>
